@@ -1,0 +1,1 @@
+<button type="submit" class="btn btn-outline-info" formtarget="_blank"><i class="fas fa-paper-plane"></i> Enviar</button>

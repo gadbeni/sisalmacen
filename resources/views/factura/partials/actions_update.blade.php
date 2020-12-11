@@ -1,0 +1,2 @@
+<button id="btn_guardar" type="submit" onclick="return confirmarguardado()" class="btn btn-outline-info"><i class="fas fa-save"></i> Guardar</button>
+<a href="{{route('factura.index')}}" class="btn btn-outline-info"><i class="fas fa-history"></i> Volver a la Lista</a
