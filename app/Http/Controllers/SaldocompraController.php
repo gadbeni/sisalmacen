@@ -9,6 +9,8 @@ use App\Saldocompradetalles;
 use DB;
 use App\Traits\Inventory;
 
+use Carbon\Carbon;
+
 class SaldocompraController extends Controller
 {
     use Inventory;
@@ -90,7 +92,7 @@ class SaldocompraController extends Controller
      */
     public function show($id)
     {
-        $saldocompra = Saldocompra::with('saldocompradetalles')->findOrFail($id);
+        $saldocompra = SaldoCompra::find($id);
         $arreglo = $this->generateinventorytoyear($saldocompra->gestion, $saldocompra->sucursal_id);
         return view('saldocompra.show',compact('saldocompra','arreglo'));
     }
