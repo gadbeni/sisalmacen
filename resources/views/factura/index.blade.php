@@ -48,7 +48,7 @@
     window.addEventListener("load",function(){
       document.getElementById("search").addEventListener("keyup",function(){
         if((document.getElementById("search").value.length)>=2)
-          fetch(`/factura/buscador?search=${document.getElementById("search").value}`,{method:'get'})
+          fetch(`/sisalmacen/public/factura/buscador?search=${document.getElementById("search").value}`,{method:'get'})
           .then(response => response.text())
           .then(html =>{document.getElementById("resultados").innerHTML = html})
         else

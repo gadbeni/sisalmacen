@@ -14,7 +14,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     Socilitudes de Compra
@@ -54,6 +54,7 @@
                                 <td>
                                   @can('solicitudcompra.edit')
                                   <a href="{{route('solicitudcompra.edit',$solcomp->id)}}" title="Editar Solicitud de Compra" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                                  <a href="" title="Dar de Baja" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                   @endcan
                                 </td>
                             </tr>
