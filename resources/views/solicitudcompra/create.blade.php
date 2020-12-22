@@ -141,7 +141,7 @@
 							<div class="col-sm-3">
 		                        <div class="form-group">
 		                            <div class="form-line">
-		                                <input type="number" class="form-control form-control-sm" required id="montofactura" name="montofactura" placeholder="Introducir monto" autocomplete="off">
+		                                <input type="number" step="0.01" class="form-control form-control-sm" required id="montofactura" name="montofactura" placeholder="Introducir monto" autocomplete="off">
 		                            </div>
 		                            <small>Monto Factura.</small>
 		                        </div>

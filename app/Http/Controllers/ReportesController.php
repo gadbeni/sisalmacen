@@ -56,10 +56,12 @@ class ReportesController extends Controller
 
         $solcomp_factura = Solicitudcompra::with('entidad','factura')
                 ->where('id',$entidad_id)
+                ->where('estado','!=','ELIMINADO')
                 ->get();
 
         $solicitudescompras = Solicitudcompra::with('factura.facturadetalle.articulo.categoria')
                 ->where('id',$entidad_id)
+                ->where('estado','!=','ELIMINADO')
                 ->where('sucursal_id',$sucursal_id)
                 ->get();
 

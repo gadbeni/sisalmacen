@@ -240,14 +240,12 @@ class ArticuloController extends Controller
                 ->join('facturas','facturas.id','=','fdet.factura_id')
                 ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
                 ->join('entidades','entidades.id','=','s.entidad_id')
-                ->select('articulos.id as idarticulo','articulos.nombre as articulo','articulos.presentacion','fdet.preciocompra','fdet.cantidadrestante','fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad')
+                ->select('articulos.id as idarticulo','articulos.nombre as articulo','articulos.presentacion','fdet.preciocompra','fdet.cantidadrestante','fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
                 ->where('fdet.cantidadrestante','>',0)
                 ->where('s.sucursal_id',$sucursal_id)
+                ->where('s.estado', '!=','ELIMINADO')
                 ->where(function ($query) {
-                    $query->where('facturas.estado', '<>','ELIMINADO')
-                          ->orWhere(function ($q) {
-                                $q->whereNull('facturas.estado');
-                          });
+                    $query->where('facturas.estado', '<>','ELIMINADO');
                 })
                 ->orderBY('articulos.nombre','asc')
                 ->where('categoria_id',$categoria->id)
@@ -261,13 +259,11 @@ class ArticuloController extends Controller
         $sumaTotalFacturadetalle = DB::table('facturadetalles as fdet')
         ->join('facturas','facturas.id','=','fdet.factura_id')
         ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
-        ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal'))
+        ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal','s.estado'))
         ->where('s.sucursal_id',$sucursal_id)
+        ->where('s.estado', '!=','ELIMINADO')
         ->where(function ($query) {
-            $query->where('facturas.estado', '<>','ELIMINADO')
-                  ->orWhere(function ($q) {
-                        $q->whereNull('facturas.estado');
-                  });
+            $query->where('facturas.estado', '<>','ELIMINADO');
         })
         ->get();
 
@@ -279,13 +275,12 @@ class ArticuloController extends Controller
     {
         $articulo_id = $request->articulo_id;
         $sucursal_id = $request->sucursal_id;
-
+        //$articulo = 
         $articulos = DB::table('articulos')
                 ->join('categorias','categorias.id','=','articulos.categoria_id')
                 ->select('articulos.id','articulos.nombre as articulo','articulos.presentacion','categorias.nombre as categoria')
                 ->where('articulos.id',$articulo_id)
                 ->get();
-
         $indice = 0;
         foreach ($articulos as $articulo)
         {
@@ -293,16 +288,12 @@ class ArticuloController extends Controller
                 ->join('facturas','facturas.id','=','fdet.factura_id')
                 ->join('solicitudcompras as solcomp','solcomp.id','=','facturas.solicitudcompra_id')
                 ->join('entidades','entidades.id','=','solcomp.entidad_id')
-                ->select(DB::raw('CONCAT(entidades.nombre, " - ",solcomp.numerosolicitud) AS solicitudcompra'),'fdet.cantidadrestante','fdet.preciocompra')
+                ->select(DB::raw('CONCAT(entidades.nombre, " - ",solcomp.numerosolicitud) AS solicitudcompra'),'fdet.cantidadrestante','fdet.preciocompra','solcomp.estado')
                 ->where('fdet.cantidadrestante','>',0)
                 ->where('solcomp.sucursal_id',$sucursal_id)
                 ->where('fdet.articulo_id',$articulo->id)
-                ->where(function ($query) {
-                    $query->where('facturas.estado', '<>','ELIMINADO')
-                          ->orWhere(function ($q) {
-                                $q->whereNull('facturas.estado');
-                          });
-                })
+                ->where('solcomp.estado','ACTIVO')
+                ->where('facturas.estado','ACTIVO')
                 ->orderBY('solcomp.id','asc')
                 ->get();
 
@@ -341,6 +332,9 @@ class ArticuloController extends Controller
                 ->select(DB::raw('CONCAT(entidades.nombre, " - ",solcomp.numerosolicitud) AS solicitudcompra'),'edet.cantidadegresada','edet.totalbs','egresos.fechasalida','egresos.codigopedido','unidadadministrativas.nombre as oficina')
                 ->where('solcomp.sucursal_id',$sucursal_id)
                 ->where('fdet.articulo_id',$articulo->id)
+                ->where(function ($query) {
+                    $query->where('egresos.condicion',1);
+                })
                 ->where(function ($query) {
                     $query->where('facturas.estado', '<>','ELIMINADO')
                           ->orWhere(function ($q) {
