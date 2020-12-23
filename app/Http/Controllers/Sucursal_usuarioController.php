@@ -33,7 +33,7 @@ class Sucursal_usuarioController extends Controller
         $sucursal_usuarios = DB::table('sucursal_user as suc_usu')
                         ->join('sucursals','sucursals.id','=','suc_usu.sucursal_id')
                         ->join('users','users.id','=','suc_usu.user_id')
-                        ->select('suc_usu.id','sucursals.sucursal','users.name')
+                        ->select('suc_usu.id','sucursals.sucursal','users.name','suc_usu.estado','suc_usu.fecha_inactivacion')
                         ->orderBy('suc_usu.id', 'desc')
                         ->paginate();
 
@@ -113,7 +113,9 @@ class Sucursal_usuarioController extends Controller
     public function destroy($id)
     {
         $sucursal_usuario = Sucursal_user::findOrFail($id);
-        $sucursal_usuario->delete();
+        $sucursal_usuario->estado = 'INACTIVO';
+        $sucursal_usuario->fecha_inactivacion = \Carbon\Carbon::now();
+        $sucursal_usuario->update();
 
         toast('Eliminado correctamente!','warning');
         return redirect()->route('sucursal_usuario.index');

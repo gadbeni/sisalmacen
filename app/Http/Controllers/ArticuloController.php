@@ -243,9 +243,9 @@ class ArticuloController extends Controller
                 ->select('articulos.id as idarticulo','articulos.nombre as articulo','articulos.presentacion','fdet.preciocompra','fdet.cantidadrestante','fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
                 ->where('fdet.cantidadrestante','>',0)
                 ->where('s.sucursal_id',$sucursal_id)
-                ->where('s.estado', '!=','ELIMINADO')
+                ->where('s.estado','ACTIVO')
                 ->where(function ($query) {
-                    $query->where('facturas.estado', '<>','ELIMINADO');
+                    $query->where('facturas.estado','ACTIVO');
                 })
                 ->orderBY('articulos.nombre','asc')
                 ->where('categoria_id',$categoria->id)

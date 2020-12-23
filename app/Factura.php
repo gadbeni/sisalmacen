@@ -23,4 +23,9 @@ class Factura extends Model
     {
         return $this->hasMany(Facturadetalle::class);
     }
+
+    public function canceled()
+    {
+        return $this->morphMany(Canceled::class,'canceledgable');
+    }
 }

@@ -33,4 +33,9 @@ class Solicitudcompra extends Model
         return $this->hasMany(Egresodetalle::class);
     }
 
+    public function canceled()
+    {
+        return $this->morphMany(Canceled::class,'canceledgable');
+    }
+
 }

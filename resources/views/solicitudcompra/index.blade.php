@@ -54,10 +54,11 @@
                                 <td>
                                   @can('solicitudcompra.edit')
                                   <a href="{{route('solicitudcompra.edit',$solcomp->id)}}" title="Editar Solicitud de Compra" class="btn btn-info"><i class="fas fa-edit"></i></a>
-                                  <a href="" title="Dar de Baja" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                   @endcan
+                                  {{-- <a href="" title="Dar de Baja" class="btn btn-danger" data-target="#modal-delete-{{$solcomp->id}}" data-toggle="modal"><i class="fas fa-trash"></i></a> --}}
                                 </td>
                             </tr>
+                            @include('solicitudcompra.modal')
                             @empty
                               <p style="text-align: center;">No hay registros para mostrar.</p>
                             @endforelse

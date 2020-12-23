@@ -43,6 +43,6 @@ class User extends Authenticatable
     ];
 
     public function sucursales() {
-        return $this->belongsToMany(Sucursal::class);
+        return $this->belongsToMany(Sucursal::class)->wherePivot('estado','ACTIVO');
     }
 }

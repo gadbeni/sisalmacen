@@ -29,6 +29,8 @@
                               <th>#</th>
                               <th>Sucursal</th>
                               <th>Usuario</th>
+                              <th>Estado</th>
+                              <th>Fecha Inactivado</th>
                               <th></th>
                             </tr>
                         </thead>
@@ -38,6 +40,8 @@
                               <td>{{$sucursal_usuario->id}}</td>
                               <td>{{$sucursal_usuario->sucursal}}</td>
                               <td>{{$sucursal_usuario->name}}</td>
+                              <td>{{$sucursal_usuario->estado}}</td>
+                              <td>{{$sucursal_usuario->fecha_inactivacion}}</td>
                               <th>
                                  <a data-target="#modal-delete-{{$sucursal_usuario->id}}" data-toggle="modal"><button title="Eliminar asignación de sucursal" type="button" class="btn btn-danger"><i class="fas fa-trash"></i> </button></a>
                               </th>

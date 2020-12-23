@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
 
 	//Solicitud de compra.
 	Route::resource('solicitudcompra','SolicitudcompraController');
+	Route::post('unsuscrib-erequest-purchase/{id}','SolicitudcompraController@unsuscriberequest')->name('unsuscriberequest');
+
 	//Reporte de solicitudes de compras - Resumen de montos
 	Route::get('vista/solicitudesresumen_v','SolicitudcompraController@solicitudesresumen_v')->name('solicitudesresumen_v');
 	Route::post('reporte/solicitudesresumen_r','SolicitudcompraController@solicitudesresumen_r')->name('solicitudesresumen_r');
