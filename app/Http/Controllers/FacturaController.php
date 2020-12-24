@@ -44,8 +44,7 @@ class FacturaController extends Controller
                 })*/
                 ->whereIn('sucursal_id',$id_sucursales)
                 ->where(function ($query) {
-                    $query->where('estado', 'ACTIVO')
-                          ->orWhereNull('estado');
+                    $query->where('estado', 'ACTIVO');
                 })
                 ->orderBy('id','desc')
                 ->paginate(30);
@@ -71,6 +70,7 @@ class FacturaController extends Controller
                             $query->where('nit', 'like', '%'.$search.'%');
                             $query->orwhere('razonsocial', 'like', '%'.$search.'%');
                             })
+                ->having('estado','ACTIVO')
                 ->take(10)
                 ->get();
 

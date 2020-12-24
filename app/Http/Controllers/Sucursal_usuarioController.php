@@ -64,6 +64,7 @@ class Sucursal_usuarioController extends Controller
         $sucursal_usuario = new Sucursal_user;
         $sucursal_usuario->sucursal_id = $request->sucursal_id;
         $sucursal_usuario->user_id = $request->user_id;
+        $sucursal_usuario->estado = 'ACTIVO';
         $sucursal_usuario->save();
 
         toast('Sucursal asignada registrada con éxito!','success');
