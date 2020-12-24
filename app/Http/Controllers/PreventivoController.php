@@ -48,7 +48,7 @@ class PreventivoController extends Controller
                 ->select(DB::raw('CONCAT(entidades.nombre, " - ", solcomp.numerosolicitud) AS solicitudcompra'),'solcomp.id','preventivos.numeropreventivo')
                 ->whereIn('solcomp.sucursal_id',$id_sucursales)
                 ->where('solcomp.condicionegreso','=',0)
-                ->where('preventivos.estado', '<>','ELIMINADO')
+                ->where('preventivos.estado', 'ACTIVO')
                 ->whereRaw($sentencia)
                 ->groupBy('solcomp.id')
                 ->paginate();

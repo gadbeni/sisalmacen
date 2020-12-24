@@ -53,7 +53,7 @@ class SolicitudcompraController extends Controller
         ->join('entidades','entidades.id','=','solcomp.entidad_id')
         ->select('solcomp.id','entidades.nombre as entidad','solcomp.numerosolicitud','solcomp.condicion','solcomp.fechaingreso')
         ->where('solcomp.condicion','=','1')
-        ->where('solcomp.estado', '<>', 'ELIMINADO')
+        ->where('solcomp.estado', 'ACTIVO')
         ->whereIn('solcomp.sucursal_id',$id_sucursales)
         ->whereRaw($sentencia)
         ->orderBy('solcomp.id','desc')
@@ -261,12 +261,7 @@ class SolicitudcompraController extends Controller
                 //->whereRaw($sentencia_entidad_id)
                 ->whereBetween('fechaingreso',array($fechainicio,$fechafin))
                 ->where('sucursal_id',$sucursal_id)
-                ->where(function ($query) {
-                    $query->where('estado', '<>','ELIMINADO')
-                          ->orWhere(function ($q) {
-                                $q->whereNull('estado');
-                          });
-                })
+                ->where('estado', 'ACTIVO')
                 ->orderBy('fechaingreso', 'asc')
                 ->get();
 

@@ -136,12 +136,7 @@ class EgresoController extends Controller
                             ->select(DB::raw('CONCAT(entidades.nombre, " - ", s.numerosolicitud) AS solicitudcompra'),'s.id','facturas.id as id_factura')
                             ->whereIn('s.sucursal_id', $id_sucursales)
                             ->where('facturadetalles.cantidadrestante','>',0)
-                            ->where(function ($query) {
-                                $query->where('facturas.estado', '<>','ELIMINADO')
-                                      ->orWhere(function ($q) {
-                                            $q->whereNull('facturas.estado');
-                                      });
-                            })
+                            ->where('facturas.estado', 'ACTIVO')
                             ->orderBy('s.id', 'desc')
                             ->groupBy('s.id')
                             ->get();

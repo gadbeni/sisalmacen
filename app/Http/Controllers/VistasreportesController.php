@@ -89,12 +89,7 @@ class VistasreportesController extends Controller
 
         $solicitudescompras = Solicitudcompra::with('entidad')
         ->whereIn('sucursal_id',$id_sucursales)
-        ->where(function ($query) {
-            $query->where('estado', '<>','ELIMINADO')
-                  ->orWhere(function ($q) {
-                        $q->whereNull('estado');
-                  });
-        })
+        ->where('estado', 'ACTIVO')
         ->get();
 
         //$sucursales = Auth::user()->sucursales;
