@@ -160,6 +160,9 @@ class CategoriaController extends Controller
         $categoria = Categoria::find($categoria_id);
         $facturadetalles = Facturadetalle::with('factura.solicitudcompra.entidad','articulo.categoria')
             ->where('cantidadrestante','>','0')
+            ->whereHas('factura', function ($query) {
+                $query->where('estado', 'ACTIVO');
+                })
             ->whereHas('articulo', function ($query) {
                             $query->orderBY('nombre', 'asc');
                             })

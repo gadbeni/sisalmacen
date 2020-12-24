@@ -424,7 +424,7 @@ class EgresoController extends Controller
                 ->where('egresos.condicion','!=',0)
                 ->whereBetween(DB::raw('DATE_FORMAT(fechasalida, "%Y-%m-%d")'),array($fechainicio,$fechafin))
                 ->get();
-
+       
         $sumaTotalNumeroPedidos = DB::table('egresodetalles as edet')
                         ->join('egresos','egresos.id','=','edet.egreso_id')
                         ->join('facturadetalles as fdet','fdet.id','=','edet.facturadetalle_id')
@@ -465,7 +465,7 @@ class EgresoController extends Controller
 
         $egresos = Egreso::with('egresodetalle')
             ->where('sucursal_id',$sucursal_id)
-            ->where('condicion','!=',0)
+            ->where('condicion',1)
             ->orderBy(DB::raw('DATE_FORMAT(fechasalida, "%Y-%m-%d")','asc'))
             ->whereBetween(DB::raw('DATE_FORMAT(fechasalida, "%Y-%m-%d")'),array($fechainicio,$fechafin))
             ->get();
