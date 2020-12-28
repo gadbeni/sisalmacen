@@ -12,7 +12,7 @@
       </div>
 
       <div class="modal-body">
-          <h4 class="modal-title">Desea Anular esta solicitud?</h4>
+          <h4 class="modal-title">Al anular esta solicitud se anulara su factura y todos los egresos registrados para esta solicitud?</h4>
           <label for="motivo">Motivo</label>
           <textarea name="motivo" class="form-control" rows="3" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()"></textarea>
       </div>
