@@ -272,64 +272,60 @@ class SolicitudcompraController extends Controller
     }
 
     public function unsuscriberequest(Request $request, $id) {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
         $egresos_id = DB::table('egresodetalles as ed')
                         ->where('solicitudcompra_id', $id)
                         ->select('ed.egreso_id','ed.facturadetalle_id','ed.cantidad')
                         ->groupBy('ed.egreso_id')
                         ->get();
-        
-        foreach ($egresos_id as $id) {
-            $facturadetalle = Facturadetalle::where('id',$id->facturadetalle_id)->first();
-            printf("cantidad original %s.",$facturadetalle->cantidadrestante);
-            echo "<br>";
-            $facturadetalle->cantidadrestante = $facturadetalle->cantidadrestante + $id->cantidad;
-            //$facturadetalle->save();
-            
-            $scPorEgreso = DB::table('egresodetalles as ed')
-                                ->where('egreso_id', $id->egreso_id)
+
+        foreach ($egresos_id as $egre) {
+            $facturadetalle = Facturadetalle::where('id',$egre->facturadetalle_id)->first();
+            $facturadetalle->cantidadrestante = $facturadetalle->cantidadrestante + floatVal($egre->cantidad);
+            $facturadetalle->save();
+            $scPorEgreso = DB::table('egresodetalles')
+                                ->where('egreso_id', $egre->egreso_id)
                                 ->select('solicitudcompra_id')
                                 ->groupBy('solicitudcompra_id')
                                 ->get()->count();
-            
-            if ($scPorEgreso == 1) {
+           
+            if ($scPorEgreso === 1) {
                 //anular egreso
-                $egreso = Egreso::find($id->egreso_id);
-                // $egreso->canceled()->create([
-                //     'user_id' => auth()->user()->id,
-                //     'motivo' => $request->motivo
-                //     ]);
+                $egreso = Egreso::where('id',$egre->egreso_id)->first();
+                $egreso->canceled()->create([
+                    'user_id' => auth()->user()->id,
+                    'motivo' => $request->motivo
+                     ]);
                 $egreso->condicion = 0;
-               // $egreso->save();
+                $egreso->update();
             }
-            printf("cantidad restante %s.",$facturadetalle->cantidadrestante);
         }
 
-        //$solicitudcompra = Solicitudcompra::find($id);
-        // $solicitudcompra->canceled()->create([
-        //     'user_id' => auth()->user()->id,
-        //     'motivo' => $request->motivo
-        //     ]);
+        $solicitudcompra = Solicitudcompra::find($id);
+       
+        $solicitudcompra->canceled()->create([
+            'user_id' => auth()->user()->id,
+            'motivo' => $request->motivo
+            ]);
 
-        //$solicitudcompra->estado = 'INACTIVO';
-        //$solicitudcompra->save();
+        $solicitudcompra->estado = 'INACTIVO';
+        $solicitudcompra->save();
 
-        //$factura = Factura::where('solicitudcompra_id',$id)->first();
-        // $factura->canceled()->create([
-        //     'user_id' => auth()->user()->id,
-        //     'motivo' => $request->motivo
-        //     ]);
-        //$factura->estado = 'INACTIVO';
-        //$solicitudcompra->save();
-
-        // toast('Solicitud de compra enulada con éxito');
-        //  return redirect()->route('solicitudcompra.index');
-        // DB::commit();
-        // }catch(\Exception $e){
-        //   DB::rollback();
-        // dd($e->getMessage());
-        // }
+        $factura = Factura::where('solicitudcompra_id',$id)->first();
+        $factura->canceled()->create([
+            'user_id' => auth()->user()->id,
+            'motivo' => $request->motivo
+            ]);
+        $factura->estado = 'INACTIVO';
+        $factura->save();
+        DB::commit();
+        toast('Solicitud de compra enulada con éxito');
+        return redirect()->route('solicitudcompra.index');
+        }catch(\Exception $e){
+          DB::rollback();
+         return $e->getMessage();
+        }
         
     }
 }
