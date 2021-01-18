@@ -76,7 +76,7 @@ trait Inventory
                        ->select(
                            DB::raw("DATE_FORMAT(eg.fechasalida, '%m') as mes"),
                            'eg.fechasalida', 'ed.facturadetalle_id',
-                           DB::raw("sum(COALESCE(ed.cantidadegresada, 0)) * fd.preciocompra as sub_total")
+                           DB::raw("sum(COALESCE(ed.cantidad, 0)) * fd.preciocompra as sub_total")
                        )
                        ->where('eg.gestion', $anio)
                        ->where('sc.sucursal_id', $sucursal)

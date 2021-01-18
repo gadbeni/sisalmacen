@@ -299,7 +299,13 @@ class SolicitudcompraController extends Controller
                      ]);
                 $egreso->condicion = 0;
                 $egreso->update();
-            }
+            } 
+            // else {
+            //     $egresodetalle = Egresodetalle::where('id',$egre->id)->first();
+            //     $egresodetalle->cantidad = 0;
+            //     $egresodetalle->totalbs = 0;
+            //     $egresodetalle->save();
+            // }
         }
 
         $solicitudcompra = Solicitudcompra::find($id);

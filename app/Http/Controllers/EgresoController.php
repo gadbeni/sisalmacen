@@ -90,6 +90,7 @@ class EgresoController extends Controller
                 'da.nombre as da_nombre', 'ua.nombre as ua_nombre',
                 'cu.codigo'
             )
+            ->where('e.condicion','!=',0)
             ->where('e.codigopedido', 'like', '%'.$search.'%')
             ->orwhere('e.fechasolicitud', 'like', '%'.$search.'%')
             ->orwhere('e.fechasalida', 'like', '%'.$search.'%')

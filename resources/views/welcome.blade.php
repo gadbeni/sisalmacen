@@ -87,7 +87,7 @@
                 <div class="links">
                     <a href="https://www.beni.gob.bo/">Gobierno Autónomo Departamental del Beni</a>
                     <br>
-                    <small>Copyright © 2020 Dirección de Sistemas y Telecomunicaciones. - Todos los Derechos Reservados.<br>Contacto: rhisita@beni.gob.bo</small>
+                    <small>Copyright © 2021 Dirección de Sistemas y Telecomunicaciones. - Todos los Derechos Reservados.<br>Contacto: rhisita@beni.gob.bo</small>
                 </div>
             </div>
         </div>

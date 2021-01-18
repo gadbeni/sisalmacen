@@ -223,14 +223,20 @@ class FacturaController extends Controller
             $factura->estado = 'ELIMINADO';
             $factura->eliminado_por = Auth::user()->email;
             $factura->update();
-
+            $factura->canceled()->create([
+            'user_id' => auth()->user()->id,
+            'motivo' => 'Anulacion de factura'
+            ]);
             //Elimina solicitud de compra.
             //$solicitudcompra = Solicitudcompra::where('id',$factura->solicitudcompra_id)->delete();
             $solicitudcompra = Solicitudcompra::where('id',$factura->solicitudcompra_id)->first();
             $solicitudcompra->estado = 'ELIMINADO';
             $solicitudcompra->eliminado_por = Auth::user()->email;
             $solicitudcompra->update();
-
+            $solicitudcompra->canceled()->create([
+                'user_id' => auth()->user()->id,
+                'motivo' => 'Anulacion de factura + solicitud de compra'
+                ]);
             DB::commit();
 
         }catch(\Exception $e){
