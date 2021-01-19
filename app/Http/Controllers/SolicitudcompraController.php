@@ -261,7 +261,7 @@ class SolicitudcompraController extends Controller
                 //->whereRaw($sentencia_entidad_id)
                 ->whereBetween('fechaingreso',array($fechainicio,$fechafin))
                 ->where('sucursal_id',$sucursal_id)
-                ->where('estado', 'ACTIVO')
+                ->where('estado','=','ACTIVO')
                 ->orderBy('fechaingreso', 'asc')
                 ->get();
 

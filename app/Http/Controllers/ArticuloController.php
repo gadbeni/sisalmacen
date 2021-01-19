@@ -234,7 +234,7 @@ class ArticuloController extends Controller
                 ->where('fdet.cantidadrestante','>',0)
                 ->where('s.sucursal_id',$sucursal_id)
                 ->where('s.estado','ACTIVO')
-                ->where('facturas.estado', 'ACTIVO')
+                ->where('facturas.estado','=','ACTIVO')
                 ->orderBY('articulos.nombre','asc')
                 ->where('categoria_id',$categoria->id)
                 ->get();
@@ -249,8 +249,8 @@ class ArticuloController extends Controller
         ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
         ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal','s.estado'))
         ->where('s.sucursal_id',$sucursal_id)
-        ->where('s.estado','ACTIVO')
-        ->where('facturas.estado','ACTIVO')
+        ->where('s.estado','=','ACTIVO')
+        ->where('facturas.estado','=','ACTIVO')
         ->get();
 
         $pdf = \PDF::loadview('pdf.saldoproducto',compact('categorias','sumaTotalFacturadetalle'));

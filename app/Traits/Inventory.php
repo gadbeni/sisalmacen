@@ -79,9 +79,10 @@ trait Inventory
                            DB::raw("sum(COALESCE(ed.cantidad, 0)) * fd.preciocompra as sub_total")
                        )
                        ->where('eg.gestion', $anio)
+                       ->where('eg.condicion','!=',0)
                        ->where('sc.sucursal_id', $sucursal)
-                       ->where('fa.estado', 'ACTIVO')
-                       ->where('sc.estado', 'ACTIVO')
+                       ->where('fa.estado','=','ACTIVO')
+                       ->where('sc.estado','=','ACTIVO')
                        ->groupBy('eg.fechasalida', 'ed.facturadetalle_id')
                        ->orderBy('eg.fechasalida')
                        ->get()->toArray();
