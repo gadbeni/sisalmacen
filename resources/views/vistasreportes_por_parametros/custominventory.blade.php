@@ -32,7 +32,7 @@
                       <div class="col-sm-4">
                         <div class="form-group">
                           <div class="form-line">
-                             <select class="form-control form-control-sm" name="entidad">
+                             <select class="form-control form-control-sm" name="entidad" id="entidad">
                               <option value="" selected disabled>Seleccione</option>
                                <option value="SaldoArticulos">Saldo de Articulos</option>
                                 <option value="yearsumary">Resumen Anual</option>
@@ -42,7 +42,7 @@
                         </div>
                       </div>
                       <!-- === -->
-                      <div class="col-md-4">
+                      <div class="col-md-4" id="report_gnral">
                           <div class="form-group">
                               <div class="form-line">
                                  <select class="form-control form-control-sm" name="tipo_reporte" id="tipo_reporte">
@@ -55,7 +55,22 @@
                               <small>Seleccione el tipo de reporte.</small>
                           </div>
                       </div>
-
+                      <div class="col-md-4" id="report_years">
+                          <div class="form-group">
+                              <div class="form-line">
+                                 <select class="form-control form-control-sm" name="year" id="year">
+                                   <option value="" selected disabled>Seleccione</option>
+                                   <option value="2017">2017</option>
+                                   <option value="2018">2018</option>
+                                   <option value="2019">2019</option>
+                                   <option value="2020">2020</option>
+                                   <option value="2021">2021</option>
+                                   <option value="2022">2022</option>
+                                 </select>
+                              </div>
+                              <small>Seleccione la gestion.</small>
+                          </div>
+                      </div>
                          <!-- === -->
                           <div class="col-sm-6" id="rango_fechas">
                                 <div class="form-group">
@@ -89,9 +104,12 @@
 @endsection
 @section('script')
 <script type="text/javascript">
-var select = document.getElementById('tipo_reporte');
+    var select = document.getElementById('tipo_reporte');
+    var select_entity = document.getElementById('entidad');
     var el = document.getElementById('rango_fechas');
-     var el1 = document.getElementById('rango_fechas1');
+    var el1 = document.getElementById('rango_fechas1');
+    var elyear = document.getElementById('report_years');
+    var elreportyear = document.getElementById('report_gnral');
 
   select.addEventListener('change',
     function(){
@@ -104,11 +122,27 @@ var select = document.getElementById('tipo_reporte');
         el1.style.display = 'none';
       }
     });
-
+    select_entity.addEventListener('change',
+    function(){
+      var selectedOptions = this.options[select_entity.selectedIndex];
+      if (selectedOptions.value == 'yearsumary') {
+         elreportyear.style.display = 'none';
+         elyear.style.display = 'block';
+         el.style.display = 'none';
+        el1.style.display = 'none';
+      }else {
+        $("#year").val("");
+        elreportyear.style.display = 'block';
+        elyear.style.display = 'none';
+        el.style.display = 'none';
+        el1.style.display = 'none';
+      }
+    });
   window.onload = function(){/*hace que se cargue la función lo que predetermina que div estará oculto hasta llamar a la función nuevamente*/
-
+  elreportyear.style.display = 'none';
   el.style.display = 'none';
   el1.style.display = 'none';
+  elyear.style.display = 'none';
   }
 </script>
 @stop

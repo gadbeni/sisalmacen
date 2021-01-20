@@ -64,7 +64,7 @@
         <table width="100%" style="font-size: 10pt">
            <thead>
                 <tr>
-                    <th style="text-align:left;">SALDO INVENTARIO INICIAL GESTION {{$anio}}</th>
+                    <th style="text-align:left;">SALDO INVENTARIO INICIAL GESTION {{$year}}</th>
                     <th style="text-align:right">{{$saldoinicial->monto ?? 0}}</th>
                 </tr>
             </thead>
@@ -101,7 +101,7 @@
         <table width="100%" style="font-size: 10pt">
            <thead>
             <tr>
-                <th style="text-align:left;">SALDO INVENTARIO FINAL GESTION {{$anio}}</th>
+                <th style="text-align:left;">SALDO INVENTARIO FINAL GESTION {{$year}}</th>
                 <th style="text-align:right">{{$saldo}}</th>
             </tr>
           </thead>

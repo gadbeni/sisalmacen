@@ -86,19 +86,23 @@ class ReportesController extends Controller
         $tiporeporte = $request->tipo_reporte;
         $f_inicio = $request->inicio;
         $f_fin    = $request->fin;
-        $anio = Carbon::today()->year;
-        $saldoinicial = SaldoCompra::select('monto','gestion')
-                         ->where('gestion',$anio)
+        //$anio = Carbon::today()->year;
+        
+        if (isset($request->year)) {
+            $year = $request->year;
+            $saldoinicial = SaldoCompra::select('monto','gestion')
+                         ->where('gestion',$year)
                          ->where('sucursal_id',$sucursal) 
                          ->first();
+            $reporte= $this->generateinventorytoyear($year, $sucursal);
+            $pdf = \PDF::loadview('pdf.inventario_anual',compact('saldoinicial','reporte','year'));
+            return $pdf->stream('INVENTARIO ANUAL.pdf');
+        }else {
+            return "no envio anio";
+        }
+        
         switch ($modelo) {
             case 'yearsumary':
-                 if ($tiporeporte == "currentyear") {
-                    $reporte= $this->generateinventorytoyear($anio, $sucursal);
-                    $pdf = \PDF::loadview('pdf.inventario_anual',compact('saldoinicial','reporte','anio'));
-                    return $pdf->stream('INVENTARIO ANUAL.pdf');
-                 }
-
                 break;
 
             case 'solicitudes':
@@ -111,5 +115,4 @@ class ReportesController extends Controller
         }
 
     }
-
 }

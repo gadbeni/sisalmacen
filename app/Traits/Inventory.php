@@ -43,7 +43,7 @@ trait Inventory
                         ->groupBy(DB::raw("DATE_FORMAT(sc.fechaingreso, '%m')"))
                         ->orderBy('sc.fechaingreso')
                         ->get();
-   
+
        /*$ingresos_aux = collect();
        foreach ($ingresos as $key => $value) {
            $monto = 0;
@@ -86,8 +86,7 @@ trait Inventory
                        ->groupBy('eg.fechasalida', 'ed.facturadetalle_id')
                        ->orderBy('eg.fechasalida')
                        ->get()->toArray();
-
-
+        
        /*$egresos_aux = collect();
        foreach ($egresos as $key => $value) {
            $monto = 0;
@@ -100,16 +99,18 @@ trait Inventory
         $cantEgresos = count($egresos);
         $monto = 0;
         $egresos_aux = collect();
-        for ($i = 0; $i < ($cantEgresos - 1); $i++) {
-            $next = $i + 1;
-            $monto = $monto + $egresos[$i]->sub_total;
-            if ($egresos[$next]->mes != $egresos[$i]->mes) {
-                $egresos_aux->push(['mes' => $egresos[$i]->mes, 'monto' => $monto]);
-                $monto = 0;
+        if (count($egresos) > 0) {
+            for ($i = 0; $i < ($cantEgresos - 1); $i++) {
+                $next = $i + 1;
+                $monto = $monto + $egresos[$i]->sub_total;
+                if ($egresos[$next]->mes != $egresos[$i]->mes) {
+                    $egresos_aux->push(['mes' => $egresos[$i]->mes, 'monto' => $monto]);
+                    $monto = 0;
+                }
             }
+        $egresos_aux->push(['mes' => $egresos[$cantEgresos-1]->mes, 'monto' => $monto + $egresos[$cantEgresos-1]->sub_total]);    
         }
-        $egresos_aux->push(['mes' => $egresos[$cantEgresos-1]->mes, 'monto' => $monto + $egresos[$cantEgresos-1]->sub_total]);
-   
+        
        $reporte = collect();
        $meses = array('', 'ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE');
        for ($i=1; $i <= 12; $i++) {

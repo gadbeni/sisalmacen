@@ -56,7 +56,7 @@
                   SisAlmacen V.1.1
                 </div>
                 <!-- Default to the left -->
-                <strong>Copyright &copy; 2019 <a href="javascript:void(0);">Dirección de Sistemas y Telecomunicaciones</a>.</strong> All rights reserved.
+                <strong>Copyright &copy; 2021 <a href="javascript:void(0);">Dirección de Sistemas y Telecomunicaciones</a>.</strong> Todos los Derechos Reservados.
             </footer>
 
         </div>
