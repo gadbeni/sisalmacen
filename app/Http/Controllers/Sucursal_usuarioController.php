@@ -121,4 +121,14 @@ class Sucursal_usuarioController extends Controller
         toast('Eliminado correctamente!','warning');
         return redirect()->route('sucursal_usuario.index');
     }
+
+    public function active($id)
+    {
+        $sucursal_usuario = Sucursal_user::findOrFail($id);
+        $sucursal_usuario->estado = 'ACTIVO';
+        $sucursal_usuario->fecha_inactivacion = null;
+        $sucursal_usuario->update();
+        toast('Usuario Activado correctamente!','success');
+        return redirect()->route('sucursal_usuario.index');
+    }
 }

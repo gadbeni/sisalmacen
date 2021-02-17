@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
 
 	//Sucursales_Usuarios (Asignacion de sucursales).
 	Route::resource('sucursal_usuario','Sucursal_usuarioController');
+	Route::post('sucursaluser/{id}','Sucursal_usuarioController@active')->name('active.user');
 
 	//Categorias.
 	Route::resource('categoria','CategoriaController');
@@ -41,6 +42,10 @@ Route::middleware(['auth'])->group(function () {
 
 	//Proveedores
 	Route::get('reporte/proveedores', 'ProveedorController@reporteproveedores')->name('r_proveedores');
+
+	//reporte dependencias por secretarias
+    Route::get('reporte/dependencies_by_secretaries', 'VistasreportesController@view_of_dependencies_by_secretaries')->name('view_dependencies_by_secretaries');
+	Route::post('dependencies_by_secretaries','ReportesController@dependencies_by_secretaries')->name('dependencies_by_secretaries');
 
 	//Articulos
 	//Buscador de artículos

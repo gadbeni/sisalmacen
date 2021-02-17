@@ -232,8 +232,8 @@ class ArticuloController extends Controller
                 ->join('entidades','entidades.id','=','s.entidad_id')
                 ->select('articulos.id as idarticulo','articulos.nombre as articulo','articulos.presentacion','fdet.preciocompra','fdet.cantidadrestante','fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
                 ->where('fdet.cantidadrestante','>',0)
-                ->where('s.sucursal_id',$sucursal_id)
-                ->where('s.estado','ACTIVO')
+                ->where('s.sucursal_id','=',$sucursal_id)
+                ->where('s.estado','=','ACTIVO')
                 ->where('facturas.estado','=','ACTIVO')
                 ->orderBY('articulos.nombre','asc')
                 ->where('categoria_id',$categoria->id)
@@ -247,12 +247,13 @@ class ArticuloController extends Controller
         $sumaTotalFacturadetalle = DB::table('facturadetalles as fdet')
         ->join('facturas','facturas.id','=','fdet.factura_id')
         ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
-        ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal','s.estado'))
+        ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal','s.estado','fdet.cantidadrestante'))
+        ->where('fdet.cantidadrestante','>',0)
         ->where('s.sucursal_id',$sucursal_id)
         ->where('s.estado','=','ACTIVO')
         ->where('facturas.estado','=','ACTIVO')
         ->get();
-
+        //return $sumaTotalFacturadetalle;
         $pdf = \PDF::loadview('pdf.saldoproducto',compact('categorias','sumaTotalFacturadetalle'));
         return $pdf->stream('SALDO DE PRODUCTOS - '.date('d-m-Y').'.pdf');
     }

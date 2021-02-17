@@ -43,10 +43,15 @@
                               <td>{{$sucursal_usuario->estado}}</td>
                               <td>{{$sucursal_usuario->fecha_inactivacion}}</td>
                               <th>
-                                 <a data-target="#modal-delete-{{$sucursal_usuario->id}}" data-toggle="modal"><button title="Eliminar asignación de sucursal" type="button" class="btn btn-danger"><i class="fas fa-trash"></i> </button></a>
+                              @if($sucursal_usuario->estado == 'ACTIVO')
+                               <a data-target="#modal-delete-{{$sucursal_usuario->id}}" data-toggle="modal"><button title="Eliminar asignación de sucursal" type="button" class="btn btn-danger"><i class="fas fa-trash"></i> </button></a>
+                              @else
+                              <a data-target="#modal-active-{{$sucursal_usuario->id}}" data-toggle="modal"><button title="Activar usuario" type="button" class="btn btn-info"><i class="fas fa-print"></i> </button></a>
+                              @endif 
                               </th>
                             </tr>
                             @include('sucursal_usuario.modal')
+                            @include('sucursal_usuario.modalactive')
                             @empty
                             <p>No hay registros para mostrar.</p>
                             @endforelse

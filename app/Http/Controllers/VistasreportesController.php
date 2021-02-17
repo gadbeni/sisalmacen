@@ -106,4 +106,10 @@ class VistasreportesController extends Controller
         $sucursales = Auth::user()->sucursales;
         return view('vistasreportes_por_parametros.saldo_por_articulo', compact('sucursales'));
     }
+
+    public function view_of_dependencies_by_secretaries() {
+        $sucursales = Auth::user()->sucursales;
+        $direccionesadm = \App\Direccionadministrativa::where('grupoda_id',1)->get();
+        return view('vistasreportes_por_parametros.view_of_dependencies_by_secretaries', compact('sucursales','direccionesadm'));
+    }
 }

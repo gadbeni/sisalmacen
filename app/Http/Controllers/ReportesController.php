@@ -24,7 +24,6 @@ class ReportesController extends Controller
     
     public function egresoarticulo_oficina(Request $request)
     {
-        //dd($request);
         $sucursal_id = $request->sucursal_id;
         $fechainicio = $request->fechainicio;
         $fechafin = $request->fechafin;
@@ -80,7 +79,8 @@ class ReportesController extends Controller
         return $pdf->stream('KARDEX DE ARTICULO.pdf');
     }
 
-    public function displayreportoinventory(Request $request){
+    public function displayreportoinventory(Request $request)
+    {
         $sucursal = $request->sucursal_id;
         $modelo   = $request->entidad;
         $tiporeporte = $request->tipo_reporte;
@@ -114,5 +114,47 @@ class ReportesController extends Controller
                 break;
         }
 
+    }
+
+    public function dependencies_by_secretaries(Request $request){
+        if ($request->direccion_id == 'all') {
+           $direcciones = $this->generate_all_dependency_to_secretaries($request->sucursal_id);
+           $pdf = \PDF::loadview('pdf.all_dependency_to_secretary',compact('direcciones'));
+           return $pdf->stream('dependencias.pdf');
+        }
+        $direccionesadm = \App\Direccionadministrativa::findOrFail($request->direccion_id);
+        $unidades = DB::table('unidadadministrativas as ua')
+                        ->select('ua.codigo','ua.nombre')
+                        ->join('egresos as eg','eg.unidadadministrativa_id','=','ua.id')
+                        ->where('ua.direccionadministrativa_id',$direccionesadm->id)
+                        ->where('eg.sucursal_id',$request->sucursal_id)
+                        ->groupBy('ua.id')
+                        ->get();
+        
+        $pdf = \PDF::loadview('pdf.dependporsecretaria',compact('direccionesadm','unidades'));
+        return $pdf->stream('dependencias.pdf');
+    }
+
+    static function generate_all_dependency_to_secretaries($sucursalid){
+        $direccionesadm = \App\Direccionadministrativa::select('direccionadministrativas.id','direccionadministrativas.codigo','direccionadministrativas.nombre')
+                                                        ->join('egresos as eg','eg.direccionadministrativa_id','=','direccionadministrativas.id')
+                                                        ->where('eg.sucursal_id',$sucursalid)
+                                                        ->groupBy('direccionadministrativas.id')
+                                                        ->get();
+        $indice = 0;
+        foreach ($direccionesadm as $dir)
+        {
+            $aux = DB::table('unidadadministrativas as ua')
+                        ->select('ua.codigo','ua.nombre')
+                        ->join('egresos as eg','eg.unidadadministrativa_id','=','ua.id')
+                        ->where('ua.direccionadministrativa_id',$dir->id)
+                        ->where('eg.sucursal_id',$sucursalid)
+                        ->groupBy('ua.id')
+                        ->get();
+
+            $direccionesadm[$indice]->unidades = $aux;
+            $indice++;
+        }
+        return $direccionesadm;
     }
 }

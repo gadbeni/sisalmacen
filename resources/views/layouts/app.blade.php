@@ -53,7 +53,7 @@
             <footer class="main-footer">
                 <!-- To the right -->
                 <div class="float-right d-none d-sm-inline">
-                  SisAlmacen V.1.1
+                  SisAlmacen V.2.0
                 </div>
                 <!-- Default to the left -->
                 <strong>Copyright &copy; 2021 <a href="javascript:void(0);">Dirección de Sistemas y Telecomunicaciones</a>.</strong> Todos los Derechos Reservados.

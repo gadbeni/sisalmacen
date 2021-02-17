@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Saldo de Artículo/Producto</title>
+    <title>All Dependency</title>
 </head>
 <style>
     #watermark {
@@ -56,61 +56,42 @@
 </style>
 <body>
     <header>
-        <p>GOBIERNO AUTONOMO DEPARTAMENTAL DEL BENI<br>UNIDAD DE ALMACENES MATERIALES Y SUMINISTROS<br>Saldo de Artículos/Productos - Trinidad, <?php $time = time(); echo date("d-m-Y", $time); ?></p>
+        <p>GOBIERNO AUTONOMO DEPARTAMENTAL DEL BENI<br>UNIDAD DE ALMACENES MATERIALES Y SUMINISTROS<br>Secretarias con sus dependencias - Trinidad, <?php $time = time(); echo date("d-m-Y", $time); ?></p>
     </header>
-
-    @foreach($categorias as $categoria)
-        @if($categoria->articulos->count()>0)
+    <?php $numeroitems = 0;?>
+    @foreach($direcciones as $direccion)
+        @if($direccion->unidades->count()>0)
+        <?php $numeroitems += $direccion->unidades->count();?>
         <div class="row">
             <table cellspacing="0" width="100%" align="center" border="1" style="font-size: 7pt">
                 <thead>
                     <tr>
-                        <th colspan="7"><strong>{{$categoria->nombre}}</strong></th>
+                        <th colspan="2"><strong>{{$direccion->nombre}}</strong></th>
                     </tr>
                     <tr>
-                        <th>Sol. Compra</th>
-                        <th>Artículo</th>
-                        <th>Cod. Artículo</th>
-                        <th>Presentación</th>
-                        <th>Precio Uni.</th>
-                        <th>Cantidad</th>
-                        <th>Total Parc.</th>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
                     </tr>
                 </thead>
                 <thead>
-                    <?php $numeroitems = 0; $suma_parcial = 0.00;?>
-                    @foreach($categoria->articulos as $art)
-                    <?php $suma_parcial += $art->cantidadrestante * $art->preciocompra; ?>
+                    @foreach($direccion->unidades as $unid)
                     <tr>
-                        <td>{{$art->entidad}} - {{$art->numerosolicitud}}</td>
-                        <td style="width:300px;">{{$art->articulo}}</td>
-                        <td>{{$art->idarticulo}}</td>
-                        <td>{{$art->presentacion}}</td>
-                        <td>{{$art->preciocompra}}</td>
-                        <td>{{$art->cantidadrestante}}</td>
-                        <td>{{number_format(($art->cantidadrestante * $art->preciocompra),2)}} Bs.</td>
+                        <td>{{$unid->codigo}}</td>
+                        <td style="width:300px;">{{$unid->nombre}}</td>
                     </tr>
                     @endforeach
                 </thead>
             </table>
         </div>
-
-        <div class="row">
-            <table width="100%" align="center" style="font-size: 7pt">
-                <tr>
-                    <td style="text-align: right">Total Parcial:
-                        {{NumerosEnLetras::convertir($suma_parcial,'Bolivianos',true)}}
-                    </td>
-                </tr>
-            </table>
-        </div><br>
+        <br>
         @endif
     @endforeach
+    <br>
         <div class="row">
             <table width="100%" align="center" style="font-size: 7pt">
                 <tr>
-                    <td style="text-align: right">Total Final - Categorías:
-                    {{NumerosEnLetras::convertir($sumaTotalFacturadetalle->sum('sumaTotal'),'Bolivianos',true)}}
+                    <td style="text-align: right">Total Items;
+                     {{ $numeroitems}}
                     </td>
                 </tr>
             </table>

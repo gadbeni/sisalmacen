@@ -138,6 +138,9 @@
         <!-- == -->
         <li><a href="{{route('r_proveedores')}}" target="_blank" class="dropdown-item"><i class="fas fa-chart-pie"></i> Todos los proveedores</a></li>
         <!-- == -->
+        <!-- == -->
+        <li><a href="{{route('view_dependencies_by_secretaries')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i>Dependencias Por secretarias</a></li>
+        <!-- == -->
     </ul>
     </li>
     @endcan
