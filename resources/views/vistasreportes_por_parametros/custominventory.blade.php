@@ -60,12 +60,14 @@
                               <div class="form-line">
                                  <select class="form-control form-control-sm" name="year" id="year">
                                    <option value="" selected disabled>Seleccione</option>
+                                   <option value="range_date">Por Fechas</option>
                                    <option value="2017">2017</option>
                                    <option value="2018">2018</option>
                                    <option value="2019">2019</option>
                                    <option value="2020">2020</option>
                                    <option value="2021">2021</option>
                                    <option value="2022">2022</option>
+                                   <option value="2022">2023</option>
                                  </select>
                               </div>
                               <small>Seleccione la gestion.</small>
@@ -105,6 +107,7 @@
 @section('script')
 <script type="text/javascript">
     var select = document.getElementById('tipo_reporte');
+    var select_report_year = document.getElementById('year');
     var select_entity = document.getElementById('entidad');
     var el = document.getElementById('rango_fechas');
     var el1 = document.getElementById('rango_fechas1');
@@ -115,6 +118,17 @@
     function(){
       var selectedOption = this.options[select.selectedIndex];
       if (selectedOption.value == 'range_date') {
+            el.style.display = 'block';
+            el1.style.display = 'block';
+      }else {
+        el.style.display = 'none';
+        el1.style.display = 'none';
+      }
+    });
+    select_report_year.addEventListener('change',
+    function(){
+      var selectedYear = this.options[select_report_year.selectedIndex];
+      if (selectedYear.value == 'range_date') {
             el.style.display = 'block';
             el1.style.display = 'block';
       }else {

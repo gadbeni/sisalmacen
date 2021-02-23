@@ -87,22 +87,24 @@ class ReportesController extends Controller
         $f_inicio = $request->inicio;
         $f_fin    = $request->fin;
         //$anio = Carbon::today()->year;
-        
-        if (isset($request->year)) {
-            $year = $request->year;
-            $saldoinicial = SaldoCompra::select('monto','gestion')
-                         ->where('gestion',$year)
-                         ->where('sucursal_id',$sucursal) 
-                         ->first();
-            $reporte= $this->generateinventorytoyear($year, $sucursal);
-            $pdf = \PDF::loadview('pdf.inventario_anual',compact('saldoinicial','reporte','year'));
-            return $pdf->stream('INVENTARIO ANUAL.pdf');
-        }else {
-            return "no envio anio";
-        }
-        
+             
         switch ($modelo) {
             case 'yearsumary':
+                 
+                if (isset($request->year) && $request->year == 'range_date') {
+                    $reporte= $this->generateinventorytorange($f_inicio,$f_fin, $sucursal);
+                    $pdf = \PDF::loadview('pdf.inventarioanualporfecha',compact('reporte'));
+                    return $pdf->stream('INVENTARIO ANUAL.pdf');
+                }else {
+                    $year = $request->year;
+                    $saldoinicial = SaldoCompra::select('monto','gestion')
+                                    ->where('gestion',$year)
+                                    ->where('sucursal_id',$sucursal) 
+                                    ->first();
+                    $reporte= $this->generateinventorytoyear($year, $sucursal);
+                    $pdf = \PDF::loadview('pdf.inventario_anual',compact('saldoinicial','reporte','year'));
+                    return $pdf->stream('INVENTARIO ANUAL.pdf');
+                }
                 break;
 
             case 'solicitudes':

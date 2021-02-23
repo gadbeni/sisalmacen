@@ -137,5 +137,83 @@ trait Inventory
    
        }
        return $reporte;
-     }
+    }
+
+    public function generateinventorytorange ($fini, $f_fin, $sucursal){
+        $ingresos = DB::table('solicitudcompras as sc')
+                        ->join('facturas as fa', 'sc.id', '=', 'fa.solicitudcompra_id')
+                        ->join('facturadetalles as fd', 'fa.id', '=', 'fd.factura_id')
+                        ->select(
+                            DB::raw("DATE_FORMAT(sc.fechaingreso, '%m') as mes"),
+                            DB::raw('SUM(fd.cantidadsolicitada * fd.preciocompra) as total')
+                        )
+                        ->where('sc.sucursal_id', $sucursal)
+                        ->where('sc.estado', 'ACTIVO')
+                        ->where('fa.estado', 'ACTIVO')
+                        ->whereBetween('sc.fechaingreso',[$fini,$f_fin])
+                        ->groupBy(DB::raw("DATE_FORMAT(sc.fechaingreso, '%m')"))
+                        ->orderBy('sc.fechaingreso')
+                        ->get();
+
+        $fecha1 = Carbon::parse($fini);
+        $fecha2 = Carbon::parse($f_fin);
+
+        $egresos = DB::table('egresodetalles as ed')
+                        ->join('egresos as eg', 'ed.egreso_id', '=', 'eg.id')
+                        ->join('facturadetalles as fd', 'ed.facturadetalle_id', '=', 'fd.id')
+                        ->join('facturas as fa', 'fd.factura_id', '=', 'fa.id')
+                        ->join('solicitudcompras as sc', 'fa.solicitudcompra_id', '=', 'sc.id')
+                        ->select(
+                            DB::raw("DATE_FORMAT(eg.fechasalida, '%m') as mes"),
+                            'eg.fechasalida', 'ed.facturadetalle_id',
+                            DB::raw("sum(COALESCE(ed.cantidad, 0)) * fd.preciocompra as sub_total")
+                        )
+                        ->where('eg.condicion','!=',0)
+                        ->where('sc.sucursal_id', $sucursal)
+                        ->where('fa.estado','=','ACTIVO')
+                        ->where('sc.estado','=','ACTIVO')
+                        ->whereDate('eg.fechasalida','>=',$fecha1)
+                        ->whereDate('eg.fechasalida','<=',$fecha2)
+                        ->groupBy('eg.fechasalida', 'ed.facturadetalle_id')
+                        ->orderBy('eg.fechasalida')
+                        ->get()->toArray();
+        
+                        $cantEgresos = count($egresos);
+        $monto = 0;
+        $egresos_aux = collect();
+        if (count($egresos) > 0) {
+            for ($i = 0; $i < ($cantEgresos - 1); $i++) {
+                $next = $i + 1;
+                $monto = $monto + $egresos[$i]->sub_total;
+                if ($egresos[$next]->mes != $egresos[$i]->mes) {
+                    $egresos_aux->push(['mes' => $egresos[$i]->mes, 'monto' => $monto]);
+                    $monto = 0;
+                }
+            }
+        $egresos_aux->push(['mes' => $egresos[$cantEgresos-1]->mes, 'monto' => $monto + $egresos[$cantEgresos-1]->sub_total]);    
+        }
+        
+       $reporte = collect();
+       $meses = array('', 'ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE');
+       for ($i=1; $i <= 12; $i++) {
+           $monto_ingreso = 0;
+           $monto_egreso = 0;
+           
+            foreach ($ingresos as $value) {
+                if(intval($value->mes)==$i){
+                    $monto_ingreso = $value->total;
+                }
+            }
+
+            foreach ($egresos_aux as $value) {
+                if(intval($value['mes'])==$i){
+                    $monto_egreso = $value['monto'];
+                }
+            }
+            $reporte->push(['mes' => $meses[$i], 'ingresos' => $monto_ingreso, 'egresos' => $monto_egreso]);
+   
+       }
+       return $reporte;
+    }
+
 }
