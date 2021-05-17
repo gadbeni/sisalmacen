@@ -1,4 +1,3 @@
-
 <div class="modal fade modal-slide-in-right" aria-hidden="true" role="dialog" tabindex="-1" id="modal-delete-{{$egre->id}}">
 {{Form::Open(array('action'=>array('EgresoController@anular',$egre->id),'method'=>'POST'))}}
   @csrf

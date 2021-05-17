@@ -1,6 +1,6 @@
-
 <div class="modal fade modal-slide-in-right" aria-hidden="true" role="dialog" tabindex="-1" id="modal-delete-{{$fac->id}}">
-{{Form::Open(array('action'=>array('FacturaController@destroy',$fac->id),'method'=>'delete'))}}
+{{Form::Open(array('action'=>array('FacturaController@anular',$fac->id),'method'=>'POST'))}}
+  @csrf
   <div class="modal-dialog">
     <div class="modal-content bg-info">
       <div class="modal-header">
@@ -11,7 +11,9 @@
       </div>
 
       <div class="modal-body">
-          <h4 class="modal-title">Desea eliminar esta solicitud de compra, factura y detalle de compra?</h4>
+          <h4 class="modal-title">Al anular esta factura tambien se anulara la solicitud de compara confirmar?</h4>
+          <label for="motivo">Motivo</label>
+          <textarea name="motivo" class="form-control" rows="3" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()"></textarea>
       </div>
 
       <div class="modal-footer justify-content-between">

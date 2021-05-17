@@ -209,33 +209,29 @@ class FacturaController extends Controller
      */
     public function destroy($id)
     {
-        //dd($id);
+       
+    }
+    public function anular(Request $request, $id) {
         DB::beginTransaction();
         try{
 
             $factura = Factura::findOrFail($id);
 
-            //Elimina detalle de compra.
-            //$facturadetalle = Facturadetalle::where('factura_id',$factura->id)->delete();
-
-            //Elimina factura de compra.
-            //$factura->delete();
             $factura->estado = 'ELIMINADO';
             $factura->eliminado_por = Auth::user()->email;
             $factura->update();
             $factura->canceled()->create([
             'user_id' => auth()->user()->id,
-            'motivo' => 'Anulacion de factura'
+            'motivo' => $request->motivo
             ]);
-            //Elimina solicitud de compra.
-            //$solicitudcompra = Solicitudcompra::where('id',$factura->solicitudcompra_id)->delete();
+            //Anula solicitud de compra.
             $solicitudcompra = Solicitudcompra::where('id',$factura->solicitudcompra_id)->first();
             $solicitudcompra->estado = 'ELIMINADO';
             $solicitudcompra->eliminado_por = Auth::user()->email;
             $solicitudcompra->update();
             $solicitudcompra->canceled()->create([
                 'user_id' => auth()->user()->id,
-                'motivo' => 'Anulacion de factura + solicitud de compra'
+                'motivo' => $request->motivo
                 ]);
             DB::commit();
 
@@ -243,7 +239,7 @@ class FacturaController extends Controller
             DB::rollback();
         }
 
-        toast('Detalle de pedido y solicitud compra eliminada con éxito!','warning');
+        toast('Factura y solicitud de compra anuladas correctamente!','success');
         return redirect()->route('factura.index');
     }
 }

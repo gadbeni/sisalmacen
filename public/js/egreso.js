@@ -73,7 +73,7 @@ var app = new Vue({
       },
 
       fetchProductos(){
-        axios.get('/sisalmacen/public/egreso_facturadetalle?dep_id=' + this.solicitudecompra)
+        axios.get('/sisalmacen/egreso_facturadetalle?dep_id=' + this.solicitudecompra)
             .then(function (response) {
               app.productos = response.data;
               console.log(response.data);
@@ -88,11 +88,11 @@ var app = new Vue({
        update: function() {
          this.form.egresodetalle = this.items;
          this.isProcessing = true;
-         axios.put('/sisalmacen/public/egreso/' + this.form.id, this.form)
+         axios.put('/sisalmacen/egreso/' + this.form.id, this.form)
              .then(function(response) {
               console.log(response);
                if(response.data.updated) {
-                 window.location = '/sisalmacen/public/egreso';
+                 window.location = '/sisalmacen/egreso';
                } else {
                    this.isProcessing = false;
                }

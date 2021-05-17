@@ -186,7 +186,7 @@
 	  	$('#direccionadministrativa_id').on('change',function(e){
 		  var dep_id  = e.target.value;
 
-		  $.get('/sisalmacen/public/unidadadministrativa?dep_id=' + dep_id, function(data){
+		  $.get('/sisalmacen/unidadadministrativa?dep_id=' + dep_id, function(data){
 
 		    $('#unidadadministrativa_id').empty();
 		    $('#unidadadministrativa_id').append('<option value="0" disabled="true" selected="true">Seleccione Unidad</option>');

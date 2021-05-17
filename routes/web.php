@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('factura/buscador', 'FacturaController@buscador');
 	Route::resource('factura','FacturaController');
 	Route::get('pdfdetallefactura/{id}', 'FacturaController@pdfdetallefactura')->name('pdfdetallefactura');
+	Route::post('anularfactura/{id}','FacturaController@anular');
 
 	//Egresos de articulos/productos.
 	//Buscador de egresos y detalles

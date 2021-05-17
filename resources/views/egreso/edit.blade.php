@@ -387,7 +387,7 @@
 		{
 			var dep_id  = e.target.value;
 		  	//$('#idarticulo').empty();
-		  	$.get('/sisalmacen/public/egreso_facturadetalle?dep_id=' + dep_id, function(data)
+		  	$.get('/sisalmacen/egreso_facturadetalle?dep_id=' + dep_id, function(data)
 		  	{
 		    	$('#idarticulo_select2bs4').empty();
 		    	$('#idarticulo_select2bs4').append('<option value="0" disabled="true" selected="true">Seleccione Artículo</option>');

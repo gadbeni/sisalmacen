@@ -32,7 +32,7 @@
                     @endcan
 
                     @can('factura.destroy')
-                    <a href="" data-target="#modal-delete-{{$fac->id}}" data-toggle="modal" title="Eliminar Detalle de Compra" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    <a href="" data-target="#modal-delete-{{$fac->id}}" data-toggle="modal" title="Anular Factura" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                     @endcan
                 </td>
             </tr>
