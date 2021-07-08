@@ -180,9 +180,10 @@ class ProveedorController extends Controller
                             $query->where('id',$proveedor_id);
                             })
                 ->whereBetween('fechafactura',array($fechainicio,$fechafin))
+                ->groupBy('fechafactura')
                 ->where('sucursal_id',$sucursal_id)
                 ->get();
-        //return $proveedores;
+
 
         // $sumaTotalSolcomp = DB::table('facturadetalles as fdet')
         // ->join('facturas','facturas.id','=','fdet.factura_id')
