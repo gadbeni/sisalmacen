@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{asset('theme/dist/css/adminlte.min.css')}}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css')}}">
     <style>
         body {
             background-color: #BACCCC;
@@ -72,5 +72,7 @@
     <script src="{{asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- AdminLTE App -->
     <script src="{{asset('theme/dist/js/adminlte.min.js')}}"></script>
+    <!-- Datatable -->
+    <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
 </body>
 </html>

@@ -17,6 +17,7 @@ use App\Facturadetalle;
 use App\Unidadadministrativa;
 use App\Preventivo;
 use Carbon\Carbon;
+use Datatables;
 use DB;
 
 class EgresoController extends Controller
@@ -36,33 +37,55 @@ class EgresoController extends Controller
      */
     public function index(Request $request)
     {
-        $sucursales = Auth::user()->sucursales;
-        foreach ($sucursales as $key => $value) {
-           $id_sucursales[] = $value->id;
-        }
-
-        /*$egresos = Egreso::with('direccionadministrativa','unidadadministrativa','cuenta')
-                ->whereIn('sucursal_id',$id_sucursales)
-                ->where('condicion','!=',0)
-                ->orderBy('id','desc')
-                ->paginate(30);*/
-
-        $egresos = DB::table('egresos as e')
-            ->leftJoin('direccionadministrativas as da', 'e.direccionadministrativa_id', '=' ,'da.id')
-            ->leftJoin('unidadadministrativas as ua', 'e.unidadadministrativa_id', '=' ,'ua.id')
-            ->leftJoin('cuentas as cu', 'e.cuenta_id', '=', 'cu.id')
-            ->select(
-                'e.id', 'e.codigopedido', 'e.fechasolicitud', 'e.fechasalida',
-                'da.nombre as da_nombre', 'ua.nombre as ua_nombre',
-                'cu.codigo'
-            )
-            ->whereIn('e.sucursal_id',$id_sucursales)
-            ->where('e.condicion','!=',0)
-            ->orderBy('id','desc')
-            ->paginate(30);
-
-        return view('egreso.index',compact('egresos'));
+        return view('egreso.index');
     }
+
+    public function list(){
+      $sucursales = Auth::user()->sucursales;
+      foreach ($sucursales as $key => $value) {
+         $id_sucursales[] = $value->id;
+      }
+      $data = DB::table('egresos as e')
+                  ->leftJoin('direccionadministrativas as da', 'e.direccionadministrativa_id', '=' ,'da.id')
+                  ->leftJoin('unidadadministrativas as ua', 'e.unidadadministrativa_id', '=' ,'ua.id')
+                  ->leftJoin('cuentas as cu', 'e.cuenta_id', '=', 'cu.id')
+                  ->select(
+                      'e.id', 'e.codigopedido', 'e.fechasolicitud', 'e.fechasalida',
+                      'da.nombre as da_nombre', 'ua.nombre as ua_nombre',
+                      'cu.codigo'
+                  )
+                  ->whereIn('e.sucursal_id',$id_sucursales)
+                  ->where('e.condicion','!=',0)
+                  ->orderBy('id','desc')
+                  ->get();
+
+      return datatables()->of($data)
+                          ->addIndexColumn()
+                          ->addColumn('date_output', function($row){
+                              return date('d/m/Y H:i:s', strtotime($row->fechasalida)).'<br><small>'.\Carbon\Carbon::parse($row->fechasalida)->diffForHumans().'</small>';
+                          })
+                          ->addColumn('oficina', function($row){
+                              return $row->da_nombre.'<br><strong>'.$row->ua_nombre.'</strong>';
+                          })
+                          ->addColumn('action', function($row){
+                              $actions = '
+                                  <div class="no-sort no-click bread-actions text-right">
+                                      <a href="'.route('pdfdetalleegreso', ['id' => $row->id]).'" title="Imprimir Detalle de Compra" target="_blank" class="btn btn-sm btn-success">
+                                          <i class="fas fa-print"></i> <span class="hidden-xs hidden-sm"></span>
+                                      </a>
+                                      <a href="'.route('egreso.edit',$row->id).'" title="Editar" class="btn btn-sm btn-info view">
+                                          <i class="fas fa-edit"></i> <span class="hidden-xs hidden-sm"></span>
+                                      </a>
+                                      <button title="Anular Egreso" class="btn btn-sm btn-danger delete" data-toggle="modal" data-target="#modal-delete" onclick="deleteItem('."'".url("anular/".$row->id)."'".')">
+                                          <i class="fas fa-trash"></i> <span class="hidden-xs hidden-sm"></span>
+                                      </button>
+                                  </div>
+                                      ';
+                              return $actions;
+                          })
+                          ->rawColumns(['date_output','oficina','action'])
+                          ->make(true);
+  }
 
     public function buscador(Request $request)
     {

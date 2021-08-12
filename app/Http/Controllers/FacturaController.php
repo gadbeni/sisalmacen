@@ -8,8 +8,11 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
+use DataTables;
 use App\Solicitudcompra;
 use App\Proveedor;
+use App\Entidad;
+use App\Egreso;
 use App\Factura;
 use App\Articulo;
 use App\Categoria;
@@ -33,48 +36,59 @@ class FacturaController extends Controller
      */
     public function index()
     {
+        return view('factura.index');
+    }
+    
+    public function list(){
         $sucursales = Auth::user()->sucursales;
         foreach ($sucursales as $key => $value) {
            $id_sucursales[] = $value->id;
         }
+        $data = Factura::with([
+                            'proveedor:id,razonsocial,nit',
+                            'solicitudcompra:id,numerosolicitud,entidad_id',
+                            'solicitudcompra.entidad:id,nombre'
+                        ])
+                        ->whereIn('sucursal_id',$id_sucursales)
+                        ->where(function ($query) {
+                            $query->where('estado', 'ACTIVO');
+                        })
+                        ->select('id','solicitudcompra_id','proveedor_id','numerofactura','montofactura','fechafactura','created_at')
+                        ->get();
 
-        $facturas = Factura::with('proveedor','solicitudcompra.entidad')
-                /*->whereHas('solicitudcompra', function ($query) use ($id_sucursales){
-                    $query->whereIn('sucursal_id',$id_sucursales);
-                })*/
-                ->whereIn('sucursal_id',$id_sucursales)
-                ->where(function ($query) {
-                    $query->where('estado', 'ACTIVO');
-                })
-                ->orderBy('id','desc')
-                ->paginate(30);
-
-        return view('factura.index', compact('facturas'));
-    }
-
-    public function buscador(Request $request)
-    {
-        $search = $request->query('search');
-
-        $facturas = Factura::with('proveedor','solicitudcompra.entidad')
-                ->where('numerofactura', 'like', '%'.$search.'%')
-                ->orwhere('fechafactura', 'like', '%'.$search.'%')
-                ->orwhere('montofactura', 'like', '%'.$search.'%')
-                ->orWhereHas('solicitudcompra', function ($query) use ($search){
-                            $query->where('numerosolicitud', 'like', '%'.$search.'%');
+        return datatables()->of($data)
+                            ->addIndexColumn()
+                            ->addColumn('entity_nro_purchase', function($row){
+                                //return $row->id;
+                                return $row->solicitudcompra->entidad->nombre.'-'.$row->solicitudcompra->numerosolicitud;
                             })
-                ->orWhereHas('solicitudcompra.entidad', function ($query) use ($search){
-                            $query->where('nombre', 'like', '%'.$search.'%');
+                            ->addColumn('provider', function($row){
+                                return $row->proveedor->razonsocial.'<br><strong>'.$row->proveedor->nit.'</strong>';
                             })
-                ->orWhereHas('proveedor', function ($query) use ($search){
-                            $query->where('nit', 'like', '%'.$search.'%');
-                            $query->orwhere('razonsocial', 'like', '%'.$search.'%');
+                            ->addColumn('date_invoice', function($row){
+                                return \Carbon\Carbon::parse($row->fechafactura)->format('Y/m/d').'<br> <strong>Monto: '.$row->montofactura.'</strong> Bs.';
                             })
-                ->having('estado','ACTIVO')
-                ->take(10)
-                ->get();
-
-        return view ('factura.lista_facturadetalles',compact('facturas'));
+                            ->addColumn('fecha_ingreso', function($row){
+                                return date('d/m/Y H:i:s', strtotime($row->created_at)).'<br><small>'.\Carbon\Carbon::parse($row->created_at)->diffForHumans().'</small>';
+                            })
+                            ->addColumn('action', function($row){
+                                $actions = '
+                                    <div class="no-sort no-click bread-actions text-right">
+                                        <a href="'.route('pdfdetallefactura', ['id' => $row->id]).'" title="Imprimir Detalle de Compra" target="_blank" class="btn btn-sm btn-success">
+                                            <i class="fas fa-print"></i> <span class="hidden-xs hidden-sm"></span>
+                                        </a>
+                                        <a href="'.route('factura.edit',$row->id).'" title="Editar" class="btn btn-sm btn-info view">
+                                            <i class="fas fa-edit"></i> <span class="hidden-xs hidden-sm"></span>
+                                        </a>
+                                        <button title="Anular Factura" class="btn btn-sm btn-danger delete" data-toggle="modal" data-target="#modal-delete" onclick="deleteItem('."'".url("anularfactura/".$row->id)."'".')">
+                                            <i class="fas fa-trash"></i> <span class="hidden-xs hidden-sm"></span>
+                                        </button>
+                                    </div>
+                                        ';
+                                return $actions;
+                            })
+                            ->rawColumns(['entity_nro_purchase', 'provider','fecha_ingreso','date_invoice','action'])
+                            ->make(true);
     }
 
     public function pdfdetallefactura($id)
@@ -125,8 +139,16 @@ class FacturaController extends Controller
      */
     public function edit($id)
     {
-        $factura = Factura::findOrFail($id);
+        $sucursales = Auth::user()->sucursales;
+        foreach ($sucursales as $key => $value) {
+           $id_sucursales[] = $value->id;
+        }
 
+        $factura = Factura::findOrFail($id);
+        $entidades = Entidad::whereIn('sucursal_id',$id_sucursales)
+                            ->where('condicion','=','1')
+                            ->orderBy('nombre', 'desc')->get();
+        $solicitud = Solicitudcompra::find($factura->solicitudcompra_id,['id','entidad_id','numerosolicitud','fechaingreso']);
         // $articulos=DB::table('articulos')
         // ->join('categorias','articulos.categoria_id','=','categorias.id')
         // ->select('articulos.id','articulos.nombre','articulos.presentacion','categorias.id as codigo_categoria','categorias.nombre as nombre_categoria')
@@ -144,7 +166,7 @@ class FacturaController extends Controller
 
         $sucursales = Auth::user()->sucursales;
         $providers = Proveedor::all();
-        return view("factura.edit", compact('factura', 'articulos', 'facturadetalles','sucursales','providers'));
+        return view("factura.edit", compact('factura', 'articulos', 'facturadetalles','sucursales','providers','solicitud','entidades'));
     }
 
     /**
@@ -158,16 +180,20 @@ class FacturaController extends Controller
     {
         //dd($request);
         $clientIP =\Request::ip ();
-
-        $factura = Factura::findOrFail($id);
-        $factura->numerofactura = $request->numerofactura;
-        $factura->fechafactura = $request->fechafactura;
-        $factura->proveedor_id = $request->proveedor_id;
-        $factura->update();
-
-
+        DB::beginTransaction();
         try{
-            DB::beginTransaction();
+            $factura = Factura::findOrFail($id);
+            $factura->numerofactura = $request->numerofactura;
+            $factura->fechafactura = $request->fechafactura;
+            $factura->proveedor_id = $request->proveedor_id;
+            $factura->update();
+
+            //actualizamos la solicitud de compra
+            $solicitud = Solicitudcompra::findOrFail($factura->solicitudcompra_id);
+            $solicitud->entidad_id = $request->entidad_id;
+            $solicitud->numerosolicitud = $request->numerosolicitud;
+            $solicitud->fechaingreso = $request->fechaingreso;
+            $solicitud->update();
             //Elimina detalle de compra.
             $facturadetalle = Facturadetalle::where('factura_id',$id)->delete();
             //DB::table('facturadetalles')->where('factura_id', $id)->delete();
@@ -211,7 +237,8 @@ class FacturaController extends Controller
     {
        
     }
-    public function anular(Request $request, $id) {
+    public function anular(Request $request, $id) 
+    {
         DB::beginTransaction();
         try{
 
@@ -241,5 +268,61 @@ class FacturaController extends Controller
 
         toast('Factura y solicitud de compra anuladas correctamente!','success');
         return redirect()->route('factura.index');
+    }
+    public function unsuscriberequest(Request $request, $id) {
+        $factura = Factura::findOrFail($id);
+        $solicitudcompra = Solicitudcompra::where('id',$factura->solicitudcompra_id)->first();
+        DB::beginTransaction();
+        try {
+        $egresos_id = DB::table('egresodetalles as ed')
+                        ->where('solicitudcompra_id', $solicitudcompra->id)
+                        ->select('ed.egreso_id','ed.facturadetalle_id','ed.cantidad')
+                        ->groupBy('ed.egreso_id')
+                        ->get();
+
+        foreach ($egresos_id as $egre) {
+            $facturadetalle = Facturadetalle::where('id',$egre->facturadetalle_id)->first();
+            $facturadetalle->cantidadrestante = $facturadetalle->cantidadrestante + floatVal($egre->cantidad);
+            $facturadetalle->save();
+            $scPorEgreso = DB::table('egresodetalles')
+                                ->where('egreso_id', $egre->egreso_id)
+                                ->select('solicitudcompra_id')
+                                ->groupBy('solicitudcompra_id')
+                                ->get()->count();
+           
+            if ($scPorEgreso === 1) {
+                //anular egreso
+                $egreso = Egreso::where('id',$egre->egreso_id)->first();
+                $egreso->canceled()->create([
+                    'user_id' => auth()->user()->id,
+                    'motivo' => $request->motivo
+                     ]);
+                $egreso->condicion = 0;
+                $egreso->update();
+            } 
+        }
+
+        $solicitudcompra->canceled()->create([
+            'user_id' => auth()->user()->id,
+            'motivo' => $request->motivo
+            ]);
+
+        $solicitudcompra->estado = 'INACTIVO';
+        $solicitudcompra->save();
+
+        $factura->canceled()->create([
+            'user_id' => auth()->user()->id,
+            'motivo' => $request->motivo
+            ]);
+        $factura->estado = 'INACTIVO';
+        $factura->save();
+        DB::commit();
+        toast('Solicitud de compra + Factura enulada con éxito');
+        return redirect()->route('factura.index');
+        }catch(\Exception $e){
+          DB::rollback();
+         return $e->getMessage();
+        }
+        
     }
 }

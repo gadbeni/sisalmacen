@@ -47,13 +47,8 @@
     <li class="nav-item dropdown">
     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Compras y Egresos</a>
     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="background-color: #F6F5A9">
-        <!-- == -->
-        @can('solicitudcompra.index')
-        <li><a href="{{route('solicitudcompra.index')}}" class="dropdown-item"><i class="fas fa-cart-plus"></i> Solicitud y Compras</a></li>
-        @endcan
-        <!-- == -->
         @can('factura.index')
-        <li><a href="{{route('factura.index')}}" class="dropdown-item"><i class="fas fa-file-invoice-dollar"></i> Facturas y Detalles</a></li>
+        <li><a href="{{route('factura.index')}}" class="dropdown-item"><i class="fas fa-file-invoice-dollar"></i>Compras y Facturas</a></li>
         @endcan
         <!-- == -->
         @can('egreso.index')

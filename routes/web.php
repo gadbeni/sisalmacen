@@ -65,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('reporte/ingresoarticulo_stock','ArticuloController@ingresoarticulo_stock')->name('r_ingresoarticulo_stock');
 
 	//Solicitud de compra.
-	Route::resource('solicitudcompra','SolicitudcompraController');
+	Route::resource('solicitudcompra','SolicitudcompraController')->except(['index']);
 	Route::post('unsuscrib-erequest-purchase/{id}','SolicitudcompraController@unsuscriberequest')->name('unsuscriberequest');
 
 	//Reporte de solicitudes de compras - Resumen de montos
@@ -77,14 +77,14 @@ Route::middleware(['auth'])->group(function () {
 
 	//factura y detalle.
 	//Buscador de factura y detalles
-	Route::get('factura/buscador', 'FacturaController@buscador');
+	Route::get('factura/buscador', 'FacturaController@list');
 	Route::resource('factura','FacturaController');
 	Route::get('pdfdetallefactura/{id}', 'FacturaController@pdfdetallefactura')->name('pdfdetallefactura');
-	Route::post('anularfactura/{id}','FacturaController@anular');
+	Route::post('anularfactura/{id}','FacturaController@unsuscriberequest');
 
 	//Egresos de articulos/productos.
 	//Buscador de egresos y detalles
-	Route::get('egreso/buscador', 'EgresoController@buscador');
+	Route::get('egreso/buscador', 'EgresoController@list');
 	Route::resource('egreso','EgresoController');
 	Route::get('pdfdetalleegreso/{id}', 'EgresoController@pdfdetalleegreso')->name('pdfdetalleegreso');
 	//Crear dependencia(Unidad Administrativa).

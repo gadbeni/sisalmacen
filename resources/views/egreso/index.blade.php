@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Egreso de Artículos/Productos')
+@section('title','Egresos de Articulos')
 
 <style>
     table th {
@@ -16,48 +16,47 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
+              <div class="body table-responsive">
                 <div class="card-header">
-                    Egresos de Artículos/productos
+                    Egresos de Articulos/Productos
                     <div class="card-tools">
-                        <div class="input-group input-group-sm" style="width: 300px;">
-                          @include('egreso.search')
-
+                        <div class="input-group input-group-sm" style="width: 50px;">
                           @can('egreso.create')
-                          <a href="{{ route('egreso.create') }}"><button type="button" class="btn btn-default" title="Crear egreso de artículo/producto"><i class="fas fa-plus"></i></button></a>
+                          <a href="{{ route('egreso.create') }}"><button type="button" class="btn btn-default float-right" title="Crear Solicitudes de Compra"><i class="fas fa-plus"></i></button></a>
                           @endcan
                         </div>
                     </div>
                 </div>
-
-                <div id="resultados" style="background-color: #F6F5A9"></div>
-
-                @include('egreso.lista_egresos')
-
-                <div class="card-footer clearfix">
-                  <ul class="pagination pagination-sm m-0 float-right">
-                    {{ $egresos->links() }}
-                  </ul>
-                  @if(count($egresos) > 0)
-                    <p>Mostrando {{ $egresos->firstItem() }} al {{ $egresos->lastItem() }} de {{ $egresos->total() }} Registros</p>
-                  @endif
+                <div class="col-md-12" style="padding:10px">
+                  <table id="dataTable" class="table table-hover" style="font-size: 10pt">
+                  </table>
                 </div>
+              </div>
             </div>
         </div>
     </div>
 </div>
+@include('factura.modal')
 @endsection
 
 @push ('script')
+  <script src="{{ url('js/main.js') }}"></script>
   <script>
-    window.addEventListener("load",function(){
-      document.getElementById("search").addEventListener("keyup",function(){
-        if((document.getElementById("search").value.length)>=2)
-          fetch(`/sisalmacen/egreso/buscador?search=${document.getElementById("search").value}`,{method:'get'})
-          .then(response => response.text())
-          .then(html =>{document.getElementById("resultados").innerHTML = html})
-        else
-          document.getElementById("resultados").innerHTML = ""
-      })
-    })
+    $(document).ready(function() {
+        let columns = [
+            { data: 'id', title: 'ID' },
+            { data: 'codigopedido', title: 'N° Pedido' },
+            { data: 'fechasolicitud', title: 'Fecha Solicitud' },
+            { data: 'date_output', title: 'Fecha Salida' },
+            { data: 'oficina', title: 'Oficina' },
+            { data: 'codigo', title: 'Cuenta' },
+            { data: 'action', title: 'Acciones', orderable: false, searchable: false },
+        ]
+        customDataTable("{{ url('egreso/buscador') }}/", columns);
+    });
+
+    function deleteItem(url){
+        $('#delete_form').attr('action', url);
+    }
   </script>
 @endpush

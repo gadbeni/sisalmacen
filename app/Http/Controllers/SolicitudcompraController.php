@@ -25,7 +25,7 @@ class SolicitudcompraController extends Controller
     public function __construct()
     {
         $this->middleware('can:solicitudcompra.create')->only(['create','store']);
-        $this->middleware('can:solicitudcompra.index')->only('index');
+        //$this->middleware('can:solicitudcompra.index')->only('index');
         $this->middleware('can:solicitudcompra.edit')->only(['edit','update']);
         $this->middleware('can:solicitudcompra.show')->only('show');
         $this->middleware('can:solicitudcompra.destroy')->only('destroy');
@@ -148,9 +148,7 @@ class SolicitudcompraController extends Controller
                 $facturadetalle->save();
                 $cont++;
             }
-
             DB::commit();
-
         }catch(\Exception $e){
             DB::rollback();
         }
@@ -235,26 +233,6 @@ class SolicitudcompraController extends Controller
         $fechainicio = $request->fechainicio;
         $fechafin = $request->fechafin;
 
-        // $entidades = DB::table('entidades')->select('id','nombre')
-        //         ->whereRaw($sentencia_entidad_id)
-        //         ->get();
-
-        // $indice = 0;
-        // foreach ($entidades as $entidad)
-        // {
-        //     $aux = DB::table('solicitudcompras as solcomp')
-        //             ->join('facturas','facturas.solicitudcompra_id','=','solcomp.id')
-        //             ->select('solcomp.numerosolicitud','solcomp.fechaingreso','facturas.montofactura')
-        //             ->whereBetween('solcomp.fechaingreso',array($fechainicio,$fechafin))
-        //             ->where('solcomp.entidad_id',$entidad->id)
-        //             //->where('s.user_id',auth()->user()->id)
-        //             ->where('solcomp.sucursal_id',$sucursal_id)
-        //             ->orderBy('solcomp.fechaingreso', 'asc')
-        //             ->get();
-
-        //     $entidades[$indice]->solicitudcompras = $aux;
-        //     $indice++;
-        // }
         $entidad = Entidad::find($entidad_id);
         $entidades = Solicitudcompra::with('entidad','factura.proveedor')
                 ->where('entidad_id',$entidad->id)
@@ -300,12 +278,6 @@ class SolicitudcompraController extends Controller
                 $egreso->condicion = 0;
                 $egreso->update();
             } 
-            // else {
-            //     $egresodetalle = Egresodetalle::where('id',$egre->id)->first();
-            //     $egresodetalle->cantidad = 0;
-            //     $egresodetalle->totalbs = 0;
-            //     $egresodetalle->save();
-            // }
         }
 
         $solicitudcompra = Solicitudcompra::find($id);

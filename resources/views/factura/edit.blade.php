@@ -40,7 +40,42 @@
 					<h3 class="card-title">Editar Solicitud de Compra</h3>
 				</div>
 				<div class="card-body">
-
+				<h5>Solicitud de Compra:</h5>
+						<div class="row">
+		                    <!-- === -->
+		                    <div class="col-sm-5">
+		                        <div class="form-group">
+		                            <div class="form-line">
+		                                <select required name="entidad_id" class="form-control form-control-sm select2bs4">
+						                    @foreach ($entidades as $entidad)
+											  <option {{(int)old('entidad_id') === $entidad->id ||$solicitud->entidad_id === $entidad->id ? 'selected' : ''}} value="{{ $entidad->id }}">{{ $entidad->nombre }}</option>
+							                @endforeach
+						                 </select>
+		                            </div>
+		                            <small>Seleccionar Entidad Solicitante.</small>
+		                        </div>
+		                    </div>
+		                    <!-- === -->
+							<div class="col-sm-2">
+		                        <div class="form-group">
+		                            <div class="form-line">
+		                                <input type="number" class="form-control form-control-sm" name="numerosolicitud" value="{{old('numerosolicitud') ? :$solicitud->numerosolicitud}}">
+		                            </div>
+		                            <small>Número Solicitud.</small>
+		                        </div>
+		                    </div>
+							<!-- === -->
+							<div class="col-sm-5">
+		                        <div class="form-group">
+		                            <div class="form-line">
+		                                <input type="date" class="form-control" id="fechaingreso" name="fechaingreso" value="{{ old('fechaingreso') ? :$solicitud->fechaingreso}}">
+		                            </div>
+		                            <small>Fecha Ingreso.</small>
+		                        </div>
+		                    </div>
+							<!-- === -->
+						</div>
+					<hr>
 					<h5>Proveedor + Detalle de Factura:</h5>
 						<div class="row">
 							<!-- === -->
