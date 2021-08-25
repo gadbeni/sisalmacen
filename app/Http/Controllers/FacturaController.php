@@ -145,10 +145,16 @@ class FacturaController extends Controller
         }
 
         $factura = Factura::findOrFail($id);
-        $entidades = Entidad::whereIn('sucursal_id',$id_sucursales)
+        $entidades = Entidad::whereIn('sucursal_id', $id_sucursales)
                             ->where('condicion','=','1')
                             ->orderBy('nombre', 'desc')->get();
         $solicitud = Solicitudcompra::find($factura->solicitudcompra_id,['id','entidad_id','numerosolicitud','fechaingreso']);
+        if ($solicitud->egresodetalles()->count() > 0) {
+            $egreso = $solicitud->egresodetalles[0]->egreso;
+            //$egreso = Egreso::doesntHave('canceled')->find($egre->id);
+        }else{
+            $egreso = null;
+        }
         // $articulos=DB::table('articulos')
         // ->join('categorias','articulos.categoria_id','=','categorias.id')
         // ->select('articulos.id','articulos.nombre','articulos.presentacion','categorias.id as codigo_categoria','categorias.nombre as nombre_categoria')
@@ -157,16 +163,16 @@ class FacturaController extends Controller
         $articulos = Articulo::with('categoria')->where('condicion','=','1')->orderBy('nombre', 'asc')->get();
 
         $facturadetalles = DB::table('facturadetalles')
-        ->join('articulos','articulos.id','=','facturadetalles.articulo_id')
-        ->join('categorias','categorias.id','=','articulos.categoria_id')
-        ->join('facturas','facturas.id','=','facturadetalles.factura_id')
-        ->select('facturadetalles.id','facturadetalles.factura_id','facturadetalles.articulo_id','facturadetalles.cantidadrestante','facturadetalles.preciocompra','facturadetalles.totalbs','facturadetalles.gestion','articulos.nombre as articulo','articulos.presentacion','categorias.nombre as categoria','facturas.numerofactura')
-        ->where('facturadetalles.factura_id', $id)
-        ->get();
+                                ->join('articulos','articulos.id','=','facturadetalles.articulo_id')
+                                ->join('categorias','categorias.id','=','articulos.categoria_id')
+                                ->join('facturas','facturas.id','=','facturadetalles.factura_id')
+                                ->select('facturadetalles.id','facturadetalles.factura_id','facturadetalles.articulo_id','facturadetalles.cantidadrestante','facturadetalles.preciocompra','facturadetalles.totalbs','facturadetalles.gestion','articulos.nombre as articulo','articulos.presentacion','categorias.nombre as categoria','facturas.numerofactura')
+                                ->where('facturadetalles.factura_id', $id)
+                                ->get();
 
         $sucursales = Auth::user()->sucursales;
         $providers = Proveedor::all();
-        return view("factura.edit", compact('factura', 'articulos', 'facturadetalles','sucursales','providers','solicitud','entidades'));
+        return view("factura.edit", compact('factura', 'articulos', 'facturadetalles','sucursales','providers','solicitud','entidades','egreso'));
     }
 
     /**
@@ -178,8 +184,7 @@ class FacturaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //dd($request);
-        $clientIP =\Request::ip ();
+        $clientIP =\Request::ip();
         DB::beginTransaction();
         try{
             $factura = Factura::findOrFail($id);
@@ -194,36 +199,38 @@ class FacturaController extends Controller
             $solicitud->numerosolicitud = $request->numerosolicitud;
             $solicitud->fechaingreso = $request->fechaingreso;
             $solicitud->update();
+
             //Elimina detalle de compra.
-            $facturadetalle = Facturadetalle::where('factura_id',$id)->delete();
-            //DB::table('facturadetalles')->where('factura_id', $id)->delete();
+            if (!$request->egresoid) {
+                 $facturadetalle = Facturadetalle::where('factura_id',$id)->delete();
 
-            //registra datos de la tabla facturadetalle
-            $cont = 0;
-            while ($cont < count($request->articulo_id)) {
-                $facturadetalle = new Facturadetalle;
-                $facturadetalle->factura_id = $id;
-                $facturadetalle->sucursal_id = $request->sucursal_id;
-                $facturadetalle->articulo_id = $request->articulo_id[$cont];
-                $facturadetalle->cantidadsolicitada = $request->cantidad[$cont];
-                $facturadetalle->cantidadrestante = $request->cantidad[$cont];
-                $facturadetalle->preciocompra = $request->precio[$cont];
-                $facturadetalle->totalbs = $request->totalcompra[$cont];
-                $facturadetalle->registro_clientIP = $request->registro_clientIP;
-                $facturadetalle->registro_clientIP_update = $clientIP;
-                $facturadetalle->gestion = $request->gestion;
-                $facturadetalle->created_at = $request->created_at;
-                $facturadetalle->user_id = Auth::user()->id;
-                $facturadetalle->save();
-                $cont++;
+                //registra datos de la tabla facturadetalle
+                $cont = 0;
+                while ($cont < count($request->articulo_id)) {
+                    $facturadetalle = new Facturadetalle;
+                    $facturadetalle->factura_id = $id;
+                    $facturadetalle->sucursal_id = $request->sucursal_id;
+                    $facturadetalle->articulo_id = $request->articulo_id[$cont];
+                    $facturadetalle->cantidadsolicitada = $request->cantidad[$cont];
+                    $facturadetalle->cantidadrestante = $request->cantidad[$cont];
+                    $facturadetalle->preciocompra = $request->precio[$cont];
+                    $facturadetalle->totalbs = $request->totalcompra[$cont];
+                    $facturadetalle->registro_clientIP = $request->registro_clientIP;
+                    $facturadetalle->registro_clientIP_update = $clientIP;
+                    $facturadetalle->gestion = $request->gestion;
+                    $facturadetalle->created_at = $request->created_at;
+                    $facturadetalle->user_id = Auth::user()->id;
+                    $facturadetalle->save();
+                    $cont++;
+                }
             }
-
+             toast('Detalle de compra actualizado con éxito!','success');
             DB::commit();
         }catch(\Exception $e){
+            dd($e);
             DB::rollback();
         }
-
-        toast('Detalle de compra actualizado con éxito!','success');
+       
         return redirect()->route('factura.index');
     }
 

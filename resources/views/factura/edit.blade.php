@@ -30,7 +30,7 @@
 </div>
 
 <form id="form" action="{{route('factura.update',$factura->id)}}" method="POST">
-    @csrf @method('PATCH')
+    @csrf @method('PUT')
 
 <div class="container">
 	<div class="row justify-content-center">
@@ -60,6 +60,7 @@
 		                        <div class="form-group">
 		                            <div class="form-line">
 		                                <input type="number" class="form-control form-control-sm" name="numerosolicitud" value="{{old('numerosolicitud') ? :$solicitud->numerosolicitud}}">
+										<input type="hidden" name="egresoid" value="{{$egreso ? $egreso->id : null}}">
 		                            </div>
 		                            <small>Número Solicitud.</small>
 		                        </div>
@@ -226,7 +227,9 @@
 				        	<div class="col-sm-3">
 		                        <div class="form-group">
 		                            <div class="form-line">
+										@if(!$egreso)
 		                            	<button type="button" id="bt_add" class="btn btn-success"><i class="fas fa-plus"></i> Agregar Artículo</button>
+										@endif
 		                            </div>
 		   	                    </div>
 		                    </div>
@@ -251,7 +254,17 @@
 			                            $total += $item->totalbs;
 			                          @endphp
 						              <tr class="selected" id="fila{{$cont}}">
-						                <td><button type="button" class="btn btn-danger" onclick="eliminar('{{$cont++}}')";>X</button></td>
+						                <td>
+											@if(!$egreso)
+											<button 
+												type="button" 
+												class="btn btn-danger" 
+												onclick="eliminar('{{$cont++}}')";
+											>
+											X
+											</button>
+											@endif
+										</td>
 						                <td><input type="hidden" name="articulo_id[]" value="{{ $item->articulo_id}}">{{ $item->articulo }}</td>
 						                <td><input type="hidden" name="precio[]" value="{{ $item->preciocompra }}">{{ $item->preciocompra }}</td>
 						                <td><input type="hidden" name="cantidad[]" value="{{ $item->cantidadrestante }}">{{ $item->cantidadrestante }}</td>
