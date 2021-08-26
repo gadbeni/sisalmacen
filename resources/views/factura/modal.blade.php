@@ -11,7 +11,7 @@
       <form action="#" id="delete_form" method="POST">
          {{ csrf_field() }}
         <div class="modal-body">
-            <h4 class="modal-title">Desea Anular este Egreso mas su detalle?</h4>
+            <h4 class="modal-title">Al anular esta factura se anularan la solicitud + todos los egresos registrados para esta factura?</h4>
             <label for="motivo">Motivo</label>
             <textarea name="motivo" class="form-control" rows="3" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()"></textarea>
         </div>

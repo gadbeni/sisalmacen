@@ -39,7 +39,7 @@
 				<div class="card-header">
 					<h3 class="card-title">Registrar Solicitud de Compra</h3>
 					<div class="card-tools">
-                        <a href="{{ route('solicitudcompra.index') }}"><button type="button" class="btn btn-default" title="Volver a la lista de Solicitudes de compra."><i class="fas fa-history"></i></button></a>
+                        <a href="{{ route('factura.index') }}"><button type="button" class="btn btn-default" title="Volver a la lista de Solicitudes de compra."><i class="fas fa-history"></i></button></a>
                     </div>
 				</div>
 				<div class="card-body">
