@@ -101,9 +101,8 @@ class SolicitudcompraController extends Controller
 
         //capyura ip del usuario
         $clientIP =\Request::ip ();
-        //DB::beginTransaction();
+        DB::beginTransaction();
         try{
-            DB::beginTransaction();
             //registra datos de la tabla solicitudcompra
             $solicitudcompra = new Solicitudcompra;
             $solicitudcompra->sucursal_id = $request->sucursal_id;
@@ -149,13 +148,13 @@ class SolicitudcompraController extends Controller
                 $cont++;
             }
             DB::commit();
+            toast('Solicitud de compra registrada con éxito!','error');
         }catch(\Exception $e){
             DB::rollback();
+            dd($e);
+            //toast('Ocurrio un error!','error');
         }
-
-        toast('Solicitud de compra registrada con éxito!','success');
         return redirect()->route('factura.index');
-
     }
 
     /**
