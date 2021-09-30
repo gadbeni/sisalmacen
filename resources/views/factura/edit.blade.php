@@ -59,7 +59,7 @@
 							<div class="col-sm-2">
 		                        <div class="form-group">
 		                            <div class="form-line">
-		                                <input type="number" class="form-control form-control-sm" name="numerosolicitud" value="{{old('numerosolicitud') ? :$solicitud->numerosolicitud}}">
+		                                <input type="text" class="form-control form-control-sm" name="numerosolicitud" value="{{old('numerosolicitud') ? :$solicitud->numerosolicitud}}">
 										<input type="hidden" name="egresoid" value="{{$egreso ? $egreso->id : null}}">
 		                            </div>
 		                            <small>Número Solicitud.</small>
