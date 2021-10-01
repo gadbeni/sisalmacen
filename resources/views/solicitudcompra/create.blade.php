@@ -75,7 +75,7 @@
 							<div class="col-sm-3">
 		                        <div class="form-group">
 		                            <div class="form-line">
-		                                <input type="number" class="form-control form-control-sm" required id="numerosolicitud" name="numerosolicitud" placeholder="Introducir número de solicitud" autocomplete="off">
+		                                <input type="text" class="form-control form-control-sm" required id="numerosolicitud" name="numerosolicitud" placeholder="Introducir número de solicitud" autocomplete="off">
 		                            </div>
 		                            <small>Número Solicitud.</small>
 		                        </div>

@@ -108,7 +108,7 @@
             </tr>
             <tr>
                 <td>RESPONSABLE ALMACENES</td>
-                <td>JEFE DE ADQUISICIONES</td>
+                <td>JEFE DE CONTRATACIONES</td>
                 <td>PROVEEDOR</td>
             </tr>
         </table>
