@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-@include('factura.modal')
+@include('factura.modal',['message' => 'Al anular esta factura se anularan la solicitud + todos los egresos registrados para esta factura?'])
 @endsection
 
 @push ('script')

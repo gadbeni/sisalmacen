@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-@include('egreso.modal')
+@include('factura.modal',['message' => 'Desea Anular este Egreso mas su detalle?'])
 @endsection
 
 @push ('script')
