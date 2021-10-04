@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-@include('factura.modal')
+@include('egreso.modal')
 @endsection
 
 @push ('script')
