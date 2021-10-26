@@ -44,7 +44,7 @@
 					<h5>Número de Pedido + Oficina Solicitante:</h5>
 						<div class="row">
 							<!-- === -->
-							<div class="col-sm-10">
+							<div class="col-sm-6">
 		                        <div class="form-group">
 		                            <div class="form-line">
 		                                <select required name="sucursal_id" class="form-control form-control-sm select2bs4">
@@ -57,16 +57,37 @@
 		                        </div>
 		                    </div>
 							<!-- === -->
-							<div class="col-sm-2">
+		                    <div class="col-sm-6">
 		                        <div class="form-group">
 		                            <div class="form-line">
-		                                <input type="text" readonly class="form-control form-control-sm" name="registro_clientIP" value="{{$egreso->registro_clientIP}}">
+		                                <select  
+										class="form-control form-control-sm select2bs4" 
+										v-model="form.direccionadministrativa_id"
+										@change="getunidades">
+						                  	<option selected value="">Seleccionar Dirección Administrativa</option>
+						                    @foreach ($direccionadministrativas as $dir)
+							                  <option value="{{$dir->id}}">{{$dir->nombre}}</option>
+							                @endforeach
+						                 </select>
 		                            </div>
-		                            <small>Ip-red Usuario.</small>
+		                            <small>Seleccionar Dirección Administrativa.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
+		                        </div>
+		                    </div>
+							<!-- === -->
+		                    <div class="col-sm-6">
+		                        <div class="form-group">
+		                            <div class="form-line">
+		                                <select class="form-control form-control-sm select2bs4" v-model="form.unidadadministrativa_id">
+											<option v-for="unid in unid_administrativas" :value="unid.id">
+												@{{ unid.nombre }}
+											</option>
+					                  	</select>
+		                            </div>
+		                            <small>Seleccionar Unidad Administrativa.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
 		                        </div>
 		                    </div>
 		                    <!-- === -->
-		                    <div class="col-sm-4">
+		                    <div class="col-sm-2">
 		                        <div class="form-group">
 		                            <div class="form-line">
 		                                <input type="number" class="form-control form-control-sm" required  placeholder="Introducir número de Pedido." v-model="form.codigopedido">
@@ -75,7 +96,7 @@
 		                        </div>
 		                    </div>
 							<!-- === -->
-							<div class="col-sm-4">
+							<div class="col-sm-2">
 		                        <div class="form-group">
 		                            <div class="form-line">
 		                                <input type="date" class="form-control" v-model="form.fechasolicitud">
@@ -84,7 +105,7 @@
 		                        </div>
 		                    </div>
 							<!-- === -->
-							<div class="col-sm-4">
+							<div class="col-sm-2">
 		                        <div class="form-group">
 		                            <div class="form-line">
 		                                <input

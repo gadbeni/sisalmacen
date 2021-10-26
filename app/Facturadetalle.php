@@ -17,4 +17,9 @@ class Facturadetalle extends Model
     {
      	return $this->belongsTo(Articulo::class);
     }
+
+    public function egresodetalles()
+    {
+    	return $this->hasMany(Egresodetalle::class,'facturadetalle_id');
+    }
 }

@@ -8,6 +8,7 @@ var app = new Vue({
       producto: '',
       cantidad: 0,
       productos: [],
+      unid_administrativas: [],
       items: [{
                 articulo: '',
                 codigoarticulo: 0,
@@ -25,6 +26,7 @@ var app = new Vue({
     },
     mounted() {
      this.itemsarray();
+     this.getunidades();
     },
     methods: {
        itemsarray(arrayDet){
@@ -40,7 +42,7 @@ var app = new Vue({
                     subtotal: (egreso.facturadetalle.preciocompra * egreso.cantidad)
              });
 
-            console.log(egreso.cantidad,egreso.facturadetalle.articulo_id)
+           // console.log(egreso.cantidad,egreso.facturadetalle.articulo_id)
            });
         },
       remove: function(detalle) {
@@ -100,6 +102,15 @@ var app = new Vue({
              .catch(function(response) {
                  this.isProcessing = false;
                  Vue.set(this.$data, 'errors', response.data);
+             })
+      },
+      getunidades(){
+        axios.get('/sisalmacen/unidadadministrativa?dep_id='+this.form.direccionadministrativa_id)
+             .then(res => {
+              this.unid_administrativas = res.data;
+             })
+             .catch(res => {
+               console.log(res);
              })
       }
     },

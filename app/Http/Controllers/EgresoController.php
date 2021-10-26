@@ -278,6 +278,11 @@ class EgresoController extends Controller
       public function edit ($id) {
         $sucursales = Auth::user()->sucursales;
         $egreso = Egreso::with(['egresodetalle.facturadetalle.articulo'])->findOrFail($id);
+        $direccionadministrativas = DB::table('direccionadministrativas')
+                                ->select('id','nombre')
+                                ->orderBy('nombre', 'asc')
+                                ->where('estado','=', 1)
+                                ->get();
 
         $solicitudcompras=DB::table('solicitudcompras as s')
                              ->join('entidades','entidades.id','=','s.entidad_id')
@@ -288,8 +293,7 @@ class EgresoController extends Controller
                              ->orderBy('s.id', 'desc')
                              ->groupBy('s.id','entidades.nombre','s.numerosolicitud')
                              ->get();
-
-        return view("egreso.editar", compact('egreso','solicitudcompras','sucursales'));
+        return view("egreso.editar", compact('egreso','solicitudcompras','sucursales','direccionadministrativas'));
        }
 
     /**
@@ -315,7 +319,8 @@ class EgresoController extends Controller
                     $facturadetalle->save();
 
                 }
-
+                $egreso->direccionadministrativa_id = $request->direccionadministrativa_id;
+                $egreso->unidadadministrativa_id = $request->unidadadministrativa_id;
                 $egreso->sucursal_id = $request->sucursal_id;
                 $egreso->codigopedido = $request->codigopedido;
                 $egreso->fechasolicitud = $request->fechasolicitud;
