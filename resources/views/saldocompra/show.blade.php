@@ -41,9 +41,9 @@
                             <tr>
                                 
                                 <td >{{$scdet['mes']}}</td>
-                                <td>{{$scdet['ingresos']}}</td>
-                                <td>{{$scdet['egresos']}}</td>
-                                <td>{{$saldo}}</td>
+                                <td>{{ number_format($scdet['ingresos'],2,',','.') }}</td>
+                                <td>{{ number_format($scdet['egresos'],2,',','.') }}</td>
+                                <td>{{ number_format($saldo,2,',','.') }}</td>
                             </tr>
                             @empty
                                 <p style="text-align: center;">No hay registros para mostrar.</p>
