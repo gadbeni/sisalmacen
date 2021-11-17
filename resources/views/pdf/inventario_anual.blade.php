@@ -102,7 +102,7 @@
            <thead>
             <tr>
                 <th style="text-align:left;">SALDO INVENTARIO FINAL GESTION {{$year}}</th>
-                <th style="text-align:right">{{$saldo}}</th>
+                <th style="text-align:right">{{ number_format($saldo,2,',','.') }}</th>
             </tr>
           </thead>
         </table>
