@@ -89,9 +89,9 @@
                 <?php $saldo+= $report['ingresos'] - $report['egresos']?>
                     <tr>
                         <td style="width: 30px">{{$report['mes']}}</td>
-                        <td style="width: 30px">{{$report['ingresos']}}</td>
-                        <td style="width: 30px">{{$report['egresos']}}</td>
-                        <td style="width: 30px">{{$saldo}}</td>
+                        <td style="width: 30px">{{ number_format($report['ingresos'],2,',','.') }}</td>
+                        <td style="width: 30px">{{ number_format($report['egresos'],2,',','.') }}</td>
+                        <td style="width: 30px">{{ number_format($saldo,2,',','.') }}</td>
                     </tr>
 
                 @endforeach
