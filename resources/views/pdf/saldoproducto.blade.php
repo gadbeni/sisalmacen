@@ -58,7 +58,9 @@
     <header>
         <p>GOBIERNO AUTONOMO DEPARTAMENTAL DEL BENI<br>UNIDAD DE ALMACENES MATERIALES Y SUMINISTROS<br>Saldo de Artículos/Productos - Trinidad, <?php $time = time(); echo date("d-m-Y", $time); ?></p>
     </header>
-
+    @php
+        $suma_final = 0.00;
+    @endphp
     @foreach($categorias as $categoria)
         @if($categoria->articulos->count()>0)
         <div class="row">
@@ -78,9 +80,14 @@
                     </tr>
                 </thead>
                 <thead>
-                    <?php $numeroitems = 0; $suma_parcial = 0.00;?>
+                    <?php 
+                        $numeroitems = 0; $suma_parcial = 0.00;
+                    ?>
+
                     @foreach($categoria->articulos as $art)
-                    <?php $suma_parcial += $art->cantidadrestante * $art->preciocompra; ?>
+                    <?php 
+                        $suma_parcial += $art->cantidadrestante * $art->preciocompra;
+                    ?>
                     <tr>
                         <td>{{$art->entidad}} - {{$art->numerosolicitud}}</td>
                         <td style="width:300px;">{{$art->articulo}}</td>
@@ -88,9 +95,12 @@
                         <td>{{$art->presentacion}}</td>
                         <td>{{$art->preciocompra}}</td>
                         <td>{{$art->cantidadrestante}}</td>
-                        <td>{{number_format(($art->cantidadrestante * $art->preciocompra),2)}} Bs.</td>
+                        <td>{{number_format(($art->cantidadrestante * $art->preciocompra),2,',','.')}} Bs.</td>
                     </tr>
                     @endforeach
+                    <?php 
+                        $suma_final += $suma_parcial;
+                    ?>
                 </thead>
             </table>
         </div>
@@ -110,7 +120,7 @@
             <table width="100%" align="center" style="font-size: 7pt">
                 <tr>
                     <td style="text-align: right">Total Final - Categorías:
-                    {{NumerosEnLetras::convertir($sumaTotalFacturadetalle->sum('sumaTotal'),'Bolivianos',true)}}
+                    {{NumerosEnLetras::convertir($suma_final,'Bolivianos',true)}}
                     </td>
                 </tr>
             </table>

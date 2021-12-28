@@ -13,6 +13,7 @@ use App\Articulo;
 use App\Categoria;
 use App\Solicitudcompra;
 use App\Preventivo;
+use Carbon\Carbon;
 use DB;
 
 
@@ -220,41 +221,28 @@ class ArticuloController extends Controller
     {
         $sucursal_id = $request->sucursal_id;
         $categorias = Categoria::orderBY('nombre','asc')->get();
-
+        $anio = Carbon::today()->year;
         $indice = 0;
         foreach ($categorias as $categoria)
         {
-            $aux = DB::table('articulos')
-                ->join('categorias','categorias.id','=','articulos.categoria_id')
-                ->join('facturadetalles as fdet','fdet.articulo_id','=','articulos.id')
-                ->join('facturas','facturas.id','=','fdet.factura_id')
-                ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
-                ->join('entidades','entidades.id','=','s.entidad_id')
-                ->select('articulos.id as idarticulo','articulos.nombre as articulo','articulos.presentacion','fdet.preciocompra','fdet.cantidadrestante','fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
-                ->where('fdet.cantidadrestante','>',0)
-                ->where('s.sucursal_id','=',$sucursal_id)
-                ->where('s.estado','=','ACTIVO')
-                ->where('facturas.estado','=','ACTIVO')
-                ->orderBY('articulos.nombre','asc')
-                ->where('categoria_id',$categoria->id)
-                ->get();
-
+            $aux = DB::table('facturadetalles as fdet')
+                    ->leftjoin('articulos as art','fdet.articulo_id','=','art.id')
+                    ->join('facturas as f','f.id','=','fdet.factura_id')
+                    ->join('solicitudcompras as s','s.id','=','f.solicitudcompra_id')
+                    ->join('entidades','entidades.id','=','s.entidad_id')
+                    ->select('art.id as idarticulo','art.nombre as articulo',
+                            'art.presentacion','fdet.preciocompra','fdet.cantidadrestante',
+                            'fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
+                    ->where('fdet.cantidadrestante','>',0)
+                    ->where('s.sucursal_id',$sucursal_id)
+                    ->where('f.estado','ACTIVO')
+                    ->orderBY('art.nombre','asc')
+                    ->where('categoria_id',$categoria->id)
+                    ->get();
             $categorias[$indice]->articulos = $aux;
             $indice++;
-
         }
-       //return $categorias;
-        $sumaTotalFacturadetalle = DB::table('facturadetalles as fdet')
-        ->join('facturas','facturas.id','=','fdet.factura_id')
-        ->join('solicitudcompras as s','s.id','=','facturas.solicitudcompra_id')
-        ->select(DB::raw('sum(fdet.cantidadrestante * fdet.preciocompra) as sumaTotal','s.estado','fdet.cantidadrestante'))
-        ->where('fdet.cantidadrestante','>',0)
-        ->where('s.sucursal_id',$sucursal_id)
-        ->where('s.estado','=','ACTIVO')
-        ->where('facturas.estado','=','ACTIVO')
-        ->get();
-        //return $sumaTotalFacturadetalle;
-        $pdf = \PDF::loadview('pdf.saldoproducto',compact('categorias','sumaTotalFacturadetalle'));
+        $pdf = \PDF::loadview('pdf.saldoproducto',compact('categorias'));
         return $pdf->stream('SALDO DE PRODUCTOS - '.date('d-m-Y').'.pdf');
     }
 

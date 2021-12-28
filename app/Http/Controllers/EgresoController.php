@@ -464,8 +464,7 @@ class EgresoController extends Controller
                         ->whereBetween(DB::raw('DATE_FORMAT(egresos.fechasalida, "%Y-%m-%d")'),array($fechainicio,$fechafin))
                         ->get();
 
-        $pdf = \PDF::loadview('pdf.egresoarticulo_stock', compact('articulos','sumaTotalNumeroPedidos'))->setPaper('A4','landscape');
-        return $pdf->stream('EGRESO DE ARTICULO DE STOCK.pdf');
+                        return view('pdf.newegresoarticulo_stock',compact('articulos','sumaTotalNumeroPedidos','fechainicio','fechafin'));
     }
 
     //Refleja el resumen de los egresos por fechas y montos
