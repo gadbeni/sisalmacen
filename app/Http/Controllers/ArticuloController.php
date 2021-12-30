@@ -212,9 +212,9 @@ class ArticuloController extends Controller
                     ->where('facturas.estado', 'ACTIVO')
                     ->whereBetween('s.fechaingreso',array($fechainicio,$fechafin))
                     ->get();
-
-        $pdf = \PDF::loadview('pdf.ingresoarticulo_stock',compact('articulos','sumaTotalSolcomp'))->setPaper('A4','landscape');
-        return $pdf->stream('INGRESO DE ARRICULO A STOCK.pdf');
+        return view('pdf.newingresoarticulo_stock', compact('articulos','sumaTotalSolcomp','fechainicio','fechafin'));
+        // $pdf = \PDF::loadview('pdf.ingresoarticulo_stock',compact('articulos','sumaTotalSolcomp'))->setPaper('A4','landscape');
+        // return $pdf->stream('INGRESO DE ARRICULO A STOCK.pdf');
     }
 
     public function saldoarticulo(Request $request)

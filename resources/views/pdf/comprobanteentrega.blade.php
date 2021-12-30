@@ -73,18 +73,18 @@
             </tr>
             <?php $numeroitems = 0; $sumatotalfactura = 0; ?>
             @foreach($egreso->egresodetalle as $det)
-            <?php $sumatotalfactura += $det->totalbs; ?>
-            <?php $numeroitems++ ?>
-            <tr>
-                <td>{{$numeroitems}}</td>
-                <td>{{$det->solicitudcompra->entidad->nombre}} - {{$det->solicitudcompra->numerosolicitud}}</td>
-                <td>{{$det->facturadetalle->articulo->nombre}}</td>
-                <td>{{$det->facturadetalle->articulo->id}}</td>
-                <td>{{$det->facturadetalle->articulo->presentacion}}</td>
-                <td>{{$det->cantidad}}</td>
-                <td>{{$det->facturadetalle->preciocompra}} Bs.</td>
-                <td>{{number_format(($det->cantidad*$det->facturadetalle->preciocompra),2)}} Bs.</td>
-            </tr>
+                <?php $sumatotalfactura += $det->totalbs; ?>
+                <?php $numeroitems++ ?>
+                <tr>
+                    <td>{{$numeroitems}}</td>
+                    <td>{{$det->solicitudcompra->entidad->nombre}} - {{$det->solicitudcompra->numerosolicitud}}</td>
+                    <td>{{$det->facturadetalle->articulo->nombre}}</td>
+                    <td>{{$det->facturadetalle->articulo->id}}</td>
+                    <td>{{$det->facturadetalle->articulo->presentacion}}</td>
+                    <td>{{$det->cantidad}}</td>
+                    <td>{{$det->facturadetalle->preciocompra}} Bs.</td>
+                    <td>{{number_format(($det->cantidad*$det->facturadetalle->preciocompra),2)}} Bs.</td>
+                </tr>
             @endforeach
         </table>
     </div>
