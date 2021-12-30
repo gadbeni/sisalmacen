@@ -77,7 +77,7 @@
                                 <tr>
                                     <td class="text-center" style="width: 40%">
                                         <span style="font-size: 15px;">
-                                            <strong>Artículos|Productos Egresados de Stock - Trinidad</strong>
+                                            <strong>INGRESO DE ARTICULO A STOCK (SOLICITUD DE COMPRAS) - TRINIDAD</strong>
                                         </span>
                                     </td>
                                 </tr>
