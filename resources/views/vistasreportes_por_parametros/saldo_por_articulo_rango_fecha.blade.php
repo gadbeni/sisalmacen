@@ -8,11 +8,11 @@
             <div class="loader">
 
             </div>
-            <form action="{{route('r_articuloegreso')}}" method="POST">
+            <form action="{{route('r_saldoarticulo_rango')}}" method="POST">
               @csrf
                 <div class="card card-info">
                   <div class="card-header">
-                    Reporte de Artículo/Producto Egresados
+                    Reporte Saldo por artículo Rengo de Fecha
                   </div>
                   <div class="card-body">
                     <div class="row">
@@ -26,23 +26,29 @@
                                 @endforeach
                             </select>
                           </div>
-                          <small>Sucursal (Usuario del Sistema).</small>
+                          <small>Sucursal</small>
                         </div>
                       </div>
+
                       <!-- === -->
-                      <div class="col-sm-8">
-                        <div class="form-group">
-                            <div class="form-line">
-                                <select name="articulo_id" class="form-control form-control-sm select2bs4">
-                                    @foreach ($articuloegreso as $art)
-                                    <option value="{{$art->id}}">{{$art->nombre}} - {{$art->presentacion}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <small>Seleccionar Artículo/Producto.</small>
-                        </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <div class="form-line">
+                                  <input type="date" required class="form-control" value="{{old('fechainicio')}}" name="fechainicio">
+                              </div>
+                              <small>Fecha Inicio.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
+                          </div>
                       </div>
-                      <!-- === -->
+                    <!-- === -->
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <div class="form-line">
+                                  <input type="date" required class="form-control" value="{{old('fechafin')}}" name="fechafin">
+                              </div>
+                              <small>Fecha Final.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
+                          </div>
+                      </div>
+                  <!-- === -->
                     </div>
                   </div>
                   <div class="card-footer">

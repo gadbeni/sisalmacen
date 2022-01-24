@@ -8,14 +8,16 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Input;
+// use Illuminate\Support\Facades\DB;
 //use Illuminate\Support\Facades\Auth;
 use App\Articulo;
 use App\Categoria;
 use App\Solicitudcompra;
 use App\Preventivo;
+use App\Sucursal;
 use Carbon\Carbon;
 use DB;
-
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class ArticuloController extends Controller
 {
@@ -246,6 +248,47 @@ class ArticuloController extends Controller
         return $pdf->stream('SALDO DE PRODUCTOS - '.date('d-m-Y').'.pdf');
     }
 
+    public function saldoarticulo_rango(Request $request)
+    {
+        // return $request;
+        $sucursal_id = $request->sucursal_id;
+        $categorias = Categoria::orderBY('nombre','asc')->get();
+        // return $categorias;
+        $anio = Carbon::today()->year;
+        // return $anio
+
+        $indice = 0;
+        foreach ($categorias as $categoria)
+        {
+            $aux = DB::table('facturadetalles as fdet')
+                    ->leftjoin('articulos as art','fdet.articulo_id','=','art.id')
+                    ->join('facturas as f','f.id','=','fdet.factura_id')
+                    ->join('solicitudcompras as s','s.id','=','f.solicitudcompra_id')
+                    ->join('entidades','entidades.id','=','s.entidad_id')
+                    ->select('art.id as idarticulo','art.nombre as articulo',
+                            'art.presentacion','fdet.preciocompra','fdet.cantidadrestante',
+                            'fdet.totalbs','s.numerosolicitud','entidades.nombre as entidad','s.estado')
+                    ->where('fdet.cantidadrestante','>',0)
+                    ->where('s.sucursal_id',$sucursal_id)
+                    ->where('s.fechaingreso','>=', $request->fechainicio)
+                    ->where('s.fechaingreso','<=', $request->fechafin)
+                    ->where('f.estado','ACTIVO')
+                    ->orderBY('art.nombre','asc')
+                    ->where('categoria_id',$categoria->id)
+                    ->get();
+
+                    
+            $categorias[$indice]->articulos = $aux;
+            $indice++;
+        }
+        $fechainicio= $request->fechainicio;
+        $fechafin = $request->fechafin;
+
+        // return $categorias;
+        $pdf = \PDF::loadview('pdf.saldoproductorangofecha',compact('categorias','fechainicio','fechafin'));
+        return $pdf->stream('SALDO DE PRODUCTOS - '.date('d-m-Y').'.pdf');
+    }
+
     public function articulostock(Request $request)
     {
         $articulo_id = $request->articulo_id;
@@ -322,6 +365,80 @@ class ArticuloController extends Controller
         return $pdf->stream('SALDO DE '.$articulos[0]->articulo.'.pdf');
     }
 
+
+
+    //Reporte resumenes de almacenes                --ig
+    public function resumenalmacenes(Request $request)
+    {
+        // return $request;
+        $data = DB::table('categorias as c')
+            ->join('articulos as r', 'r.categoria_id', 'c.id')
+            ->join('facturadetalles as fd', 'fd.articulo_id', 'r.id')
+            ->join('facturas as f', 'f.id', 'fd.factura_id')
+            ->join('sucursals as s', 's.id', 'fd.sucursal_id')
+            ->join('solicitudcompras as sc', 'sc.id', 'f.solicitudcompra_id')            
+            ->where('s.id', $request->sucursal_id)
+            ->where('sc.fechaingreso', '>=', $request->fechainicio)
+            ->where('sc.fechaingreso', '<=', $request->fechafin)
+            ->select('c.nombre as categoria', 'r.nombre as articulo', DB::raw("SUM(fd.cantidadsolicitada) as cantinicial"), DB::raw("sum(fd.totalbs) as saldoinicial"), 
+                DB::raw("SUM(fd.cantidadrestante) as cantfinal"), DB::raw("sum(fd.preciocompra)"), DB::raw("SUM(fd.cantidadrestante) * sum(fd.preciocompra) as saldofinal"))
+            ->groupBy('c.nombre', 'r.nombre')
+            ->get();
+            // return $data;
+        $sucursal = Sucursal::find($request->sucursal_id);
+        $fechainicio= $request->fechainicio;
+        $fechafin = $request->fechafin;
+
+
+        // select c.nombre, r.nombre, SUM(fd.cantidadsolicitada), sum(fd.totalbs), SUM(fd.cantidadrestante), sum(fd.preciocompra),
+        // (SUM(fd.cantidadrestante)* sum(fd.preciocompra)) as resulado from categorias as c 
+        // inner join articulos as r on r.categoria_id = c.id
+        // inner join facturadetalles as fd on fd.articulo_id = r.id
+        // inner join facturas as f on f.id = fd.factura_id
+        // where f.gestion = 2021
+        // group By c.nombre, r.nombre
+
+        // return $categorias;
+        $pdf = \PDF::loadview('pdf.resumenalmacenes',compact('data','sucursal','fechainicio','fechafin'))->setPaper('A4','landscape');
+        return $pdf->stream('SALDO DE.pdf');
+    }
+
+
+    //Reporte detalle de almacenes                --ig
+    public function detallealmacenes(Request $request)
+    {
+        // return $request;
+        $data = DB::table('categorias as c')
+            ->join('articulos as r', 'r.categoria_id', 'c.id')
+            ->join('facturadetalles as fd', 'fd.articulo_id', 'r.id')
+            ->join('facturas as f', 'f.id', 'fd.factura_id')
+            ->join('sucursals as s', 's.id', 'fd.sucursal_id')
+            ->join('solicitudcompras as sc', 'sc.id', 'f.solicitudcompra_id')            
+            ->where('s.id', $request->sucursal_id)
+            ->where('sc.fechaingreso', '>=', $request->fechainicio)
+            ->where('sc.fechaingreso', '<=', $request->fechafin)
+            ->select('c.nombre as categoria', 'r.nombre as articulo', DB::raw("SUM(fd.cantidadsolicitada) as cantinicial"), DB::raw("sum(fd.totalbs) as saldoinicial"), 
+                DB::raw("SUM(fd.cantidadrestante) as cantfinal"), DB::raw("sum(fd.preciocompra)"), DB::raw("SUM(fd.cantidadrestante) * sum(fd.preciocompra) as saldofinal"))
+            ->groupBy('c.nombre', 'r.nombre')
+            ->get();
+            // return $data;
+        $sucursal = Sucursal::find($request->sucursal_id);
+        $fechainicio= $request->fechainicio;
+        $fechafin = $request->fechafin;
+
+
+        // select c.nombre, r.nombre, SUM(fd.cantidadsolicitada), sum(fd.totalbs), SUM(fd.cantidadrestante), sum(fd.preciocompra),
+        // (SUM(fd.cantidadrestante)* sum(fd.preciocompra)) as resulado from categorias as c 
+        // inner join articulos as r on r.categoria_id = c.id
+        // inner join facturadetalles as fd on fd.articulo_id = r.id
+        // inner join facturas as f on f.id = fd.factura_id
+        // where f.gestion = 2021
+        // group By c.nombre, r.nombre
+
+        // return $categorias;
+        $pdf = \PDF::loadview('pdf.detallealmacenes',compact('data','sucursal','fechainicio','fechafin'))->setPaper('A4','landscape');
+        return $pdf->stream('SALDO DE.pdf');
+    }
 
 
 }

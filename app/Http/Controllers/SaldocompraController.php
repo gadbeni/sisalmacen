@@ -30,7 +30,7 @@ class SaldocompraController extends Controller
 
         $saldocompras= \App\SaldoCompra::with('sucursal')
 
-       // ->where('user_id',auth()->user()->id)
+       // ->where('user_id',auth()->user()->id)p
         ->whereRaw($sentencia)
         ->orderBy('id','desc')
         ->paginate();

@@ -53,12 +53,23 @@ Route::middleware(['auth'])->group(function () {
 	Route::resource('articulo','ArticuloController');
 	//Reporte saldo de artículo en stock - Global - Por sucursal
 	Route::get('vista/saldoporarticulo', 'VistasreportesController@saldoporarticulo')->name('v_saldoporarticulo');
+	Route::get('vista/saldoporarticulorango', 'VistasreportesController@saldoporarticulorango')->name('v_saldoporarticulorango');
 	Route::post('saldoarticulo','ArticuloController@saldoarticulo')->name('r_saldoarticulo');
+	Route::post('saldoarticulorango','ArticuloController@saldoarticulo_rango')->name('r_saldoarticulo_rango');
 	//Reporte de artículo en especifico (por parametro) en stock.
 	Route::get('vista/articulostock','VistasreportesController@articulostock')->name('v_articulostock');
 	Route::post('reporte/articulostock','ArticuloController@articulostock')->name('r_articulostock');
 	//Reporte de artículo en especifico (por parametro) egresado.
 	Route::get('vista/articuloegreso','VistasreportesController@articuloegreso')->name('v_articuloegreso');
+
+	//reporte para ig
+	Route::get('vista/resumenalmacenes','VistasreportesController@resumenalmacenes')->name('v_resumenalmacenes');
+	Route::post('reporte/resumenalmacenes','ArticuloController@resumenalmacenes')->name('r_resumenalmacenes');
+
+	Route::get('vista/detallealmacenes','VistasreportesController@detallealmacenes')->name('v_detallealmacenes');
+	Route::post('reporte/detallealmacenes','ArticuloController@detallealmacenes')->name('r_detallealmacenes');
+
+
 	Route::post('reporte/articuloegreso','ArticuloController@articuloegreso')->name('r_articuloegreso');
 	//Reporte de ingreso de artículo a stock - solicitud de compra por fechas.
 	Route::get('vista/ingresoarticulo_stock','VistasreportesController@ingresoarticulo_stock')->name('v_ingresoarticulo_stock');

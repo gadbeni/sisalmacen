@@ -147,6 +147,7 @@ class EgresoController extends Controller
                                 ->orderBy('nombre', 'asc')
                                 ->where('estado','=', 1)
                                 ->get();
+                                // return $direccionadministrativas;
 
         $sucursales = Auth::user()->sucursales;
         foreach ($sucursales as $key => $value) {
@@ -216,7 +217,7 @@ class EgresoController extends Controller
             $egreso->sucursal_id = $request->sucursal_id;
             $egreso->direccionadministrativa_id = $request->direccionadministrativa_id;
             $egreso->unidadadministrativa_id = $request->unidadadministrativa_id;
-            $egreso->codigopedido = $request->codigopedido;
+            $egreso->codigopedido = $request->codigopedido; 
             $egreso->fechasolicitud = $request->fechasolicitud;
             $egreso->fechasalida = $request->fechasalida;
             $egreso->cuenta_id = $request->cuenta_id;
@@ -403,6 +404,7 @@ class EgresoController extends Controller
     //Obtiene unidades administrativas - Select heredado.
     public function unidadadministrativa(Request $request)
     {
+        // dd($request);
       $dep_id = $request->dep_id;
 
       $unidadadministrativa = Unidadadministrativa::where('direccionadministrativa_id',$dep_id)->get();
