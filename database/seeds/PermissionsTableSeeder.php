@@ -481,5 +481,24 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'reporte.articuloegresado',
             'description'   => 'Podría generar reporte de articulo egresado',
         ]);
+        //Reporte articulo egresado
+        Permission::create([
+            'name'          => 'Ver reporte de articulo egresado',
+            'slug'          => 'reporte.articuloegresado',
+            'description'   => 'Podría generar reporte de articulo egresado',
+        ]);
+        //Reporte saldo de producto por rango de fecha
+        Permission::create([
+            'name'          => 'Ver reporte de saldo de articulo por rango de fecha',
+            'slug'          => 'reporte.saldoproductorango',
+            'description'   => 'Podría generar reporte de saldo de articulo por rango de fecha',
+        ]);
+        //Reporte resumen almacen
+        Permission::create([
+            'name'          => 'Ver reporte de resumenes almacen',
+            'slug'          => 'reporte.resumenalmacenes',
+            'description'   => 'Podría generar reporte de resumenes almacen',
+        ]);
+
     }
 }

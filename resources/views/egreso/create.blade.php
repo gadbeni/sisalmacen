@@ -477,13 +477,16 @@
 		$('#solicitudcompra_id').on('change',function(e)
 		{
 			var dep_id  = e.target.value;
+			// alert(6)
 		  	//$('#idarticulo').empty();
 		  	$.get('/sisalmacen/egreso_facturadetalle?dep_id=' + dep_id, function(data)
 		  	{
+				  alert(5)
 		    	$('#idarticulo_select2bs4').empty();
 		    	$('#idarticulo_select2bs4').append('<option value="0" disabled="true" selected="true">Seleccione Artículo</option>');
 
 		    	$.each(data, function(index, dependenciasObj){
+					alert(4)
 		      		$('#idarticulo_select2bs4').append('<option value="'+ dependenciasObj.id +','+dependenciasObj.nombre_categoria+','+dependenciasObj.presentacion+','+dependenciasObj.preciocompra+','+dependenciasObj.cantidadrestante+','+dependenciasObj.idfacdet+'">'+ dependenciasObj.nombre +'</option>');
 		    	})
 		  	});

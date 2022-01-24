@@ -31,6 +31,23 @@ class VistasreportesController extends Controller
     	return view ('vistasreportes_por_parametros.articuloegreso',compact('articuloegreso','sucursales'));
     }
 
+    public function resumenalmacenes()
+    {
+    	$articuloegreso = Articulo::with('categoria')->orderBy('nombre', 'asc')->get();
+        $sucursales = Auth::user()->sucursales;
+
+    	return view ('vistasreportes_por_parametros.resumenalmacenes',compact('articuloegreso','sucursales'));
+    }
+
+    public function detallealmacenes()
+    {
+    	$articuloegreso = Articulo::with('categoria')->orderBy('nombre', 'asc')->get();
+        $sucursales = Auth::user()->sucursales;
+
+    	return view ('vistasreportes_por_parametros.detallealmacenes',compact('articuloegreso','sucursales'));
+    }
+
+
     public function saldocategoria()
     {
     	$categorias = Categoria::orderBy('nombre', 'asc')->get();
@@ -105,6 +122,13 @@ class VistasreportesController extends Controller
     public function saldoporarticulo() {
         $sucursales = Auth::user()->sucursales;
         return view('vistasreportes_por_parametros.saldo_por_articulo', compact('sucursales'));
+    
+    
+    }
+    
+    public function saldoporarticulorango() {
+        $sucursales = Auth::user()->sucursales;
+        return view('vistasreportes_por_parametros.saldo_por_articulo_rango_fecha', compact('sucursales'));
     }
 
     public function view_of_dependencies_by_secretaries() {

@@ -33,16 +33,29 @@
 					</div>
 					@endif
 					<div class="row">
-					<!-- === -->
-					<div class="col-sm-12">
-                        <div class="form-group">
-                            <div class="form-line">
-                                <input type="text" class="form-control form-control-sm" required name="nombre" placeholder="Introducir categoría" autocomplete="off" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()">
-                            </div>
-                            <small>Nombre categoria/rubro.</small>
-                        </div>
-                    </div>
-					<!-- === -->
+						<div class="col-sm-12">
+	                        <div class="form-group">
+	                            <div class="form-line">
+	                                <select name="partida_id" class="form-control form-control-sm select2bs4" autocomplete="off" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()" required>
+										<option value="">SELECCIONE UNA PARTIDA</option>
+					                    @foreach ($partidas as $partida)
+						                  <option value="{{$partida->id}}">{{$partida->nombre}}</option>
+						                @endforeach
+					                 </select>
+	                            </div>
+	                            <small>Partida.</small>
+	                        </div>
+	                    </div>
+						<!-- === -->
+						<div class="col-sm-12">
+							<div class="form-group">
+								<div class="form-line">
+									<input type="text" class="form-control form-control-sm" required name="nombre" placeholder="Introducir categoría" autocomplete="off" style="text-transform:uppercase;" onkeyup ="this.value=this.value.toUpperCase()">
+								</div>
+								<small>Nombre categoria/rubro.</small>
+							</div>
+						</div>
+						<!-- === -->
 					</div>
 				</div>
 				<div class="card-footer">

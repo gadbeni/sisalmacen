@@ -108,6 +108,9 @@
         @can('reporte.saldoproducto')
         <li><a href="{{route('v_saldoporarticulo')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Saldo de Artículo</a></li>
         @endcan
+        @can('reporte.saldoproductorango')
+        <li><a href="{{route('v_saldoporarticulorango')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Saldo de Artículo Por Rango de Fecha</a></li>
+        @endcan
         <!-- == -->
         @can('reporte.saldocategoria')
         <li><a href="{{route('v_saldocategoria')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Saldo por Categoría</a></li>
@@ -123,6 +126,14 @@
         @can('reporte.articuloegresado')
         <li><a href="{{route('v_articuloegreso')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Artículo (Egresado)</a></li>
         @endcan
+        @can('reporte.resumenalmacenes')
+        <li><a href="{{route('v_resumenalmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Resumen Almacenes</a></li>
+        @endcan
+
+        {{-- @can('reporte.articuloegresado') --}}
+        {{-- <li><a href="{{route('v_detallealmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Detalle de Almacenes</a></li> --}}
+        {{-- @endcan --}}
+
         <!-- == -->
         <li><a href="{{route('solicitudesresumen_v')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Resumen Solicitudes de Compra (Montos)</a></li>
         <!-- == -->
