@@ -130,9 +130,9 @@
         <li><a href="{{route('v_resumenalmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Resumen Almacenes</a></li>
         @endcan
 
-        {{-- @can('reporte.articuloegresado') --}}
-        {{-- <li><a href="{{route('v_detallealmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Detalle de Almacenes</a></li> --}}
-        {{-- @endcan --}}
+        @can('reporte.detallesalmacenes')
+        <li><a href="{{route('v_detallealmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Detalle de Almacenes</a></li>
+        @endcan
 
         <!-- == -->
         <li><a href="{{route('solicitudesresumen_v')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Resumen Solicitudes de Compra (Montos)</a></li>

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Artículo Egresado</title>
-
+  <title>Reporte Detalle Almacen</title>
+  <link rel="stylesheet" href="{{ asset('css/print.style.css') }}" media="print">
 </head>
 <style>
+
   #watermark {
         position: fixed;
         top: 25%;
@@ -55,9 +56,17 @@
     }
 
 </style>
+<div class="noImprimir text-center">
+  <button onclick="javascript:window.print()" class="btn btn-link">
+      IMPRIMIR
+  </button>
+</div>
+
+
 <body>
+  
   <header>
-    <p>{{$sucursal->sucursal}}<br>DETALLE DE ALMACENES (BIENES DE CONSUMO) <br>{{\Carbon\Carbon::parse($fechainicio)->format('d/m/Y')}} al {{\Carbon\Carbon::parse($fechafin)->format('d/m/Y')}}</p>
+    <p>{{$sucursal->sucursal}}<br>DETALLE DE ALMACENES (BIENES DE CONSUMO) <br></p>
     
   </header>
 
@@ -80,8 +89,53 @@
         </tr>
       </thead>
       <tbody>
-        <?php $cantinicial = 0; $cantfinal = 0; $saldoinicial = 0; $saldofinal = 0; $n=1;?>
-                
+        <?php $ccinicial = 0; $ccentrada = 0; $ccsalida = 0; $ccsaldofinal = 0;
+              $binicial = 0; $bentrada = 0; $bsalida = 0; $bsaldofinal = 0; 
+        $n=1;?>
+        @foreach($data as $item)
+            <tr>
+                <td style="width: 30px">{{$n}}</td>
+                <td style="width: 30px">{{$item->nombre}}</td>
+                <td style="width: 30px">{{$item->presentacion}}</td>
+                <td style="width: 50px">{{$item->preciocompra}}</td>
+
+                <td style="width: 50px">{{round($item->cinicial)}}</td>
+                <td style="width: 50px">{{round($item->centrada)}}</td>
+                <td style="width: 50px">{{round($item->csalida)}}</td>
+                <td style="width: 50px">{{round($item->saldofinal)}}</td>
+
+                <td style="width: 50px">{{round($item->BSsaldoinicial)}}</td>
+                <td style="width: 50px">{{round($item->BSentrada)}}</td>
+                <td style="width: 50px">{{round($item->BSsalida)}}</td>
+                <td style="width: 50px">{{round($item->BSsaldofinal)}}</td>
+            </tr>
+            <?php 
+                 $ccinicial += round($item->cinicial);
+                 $ccentrada += round($item->centrada);
+                 $ccsalida += round($item->csalida);
+                 $ccsaldofinal += round($item->saldofinal);
+                 $binicial += round($item->BSsaldoinicial);
+                 $bentrada += round($item->BSentrada);
+                 $bsalida +=round($item->BSsalida);
+                 $bsaldofinal += round($item->BSsaldofinal);
+            ?>
+            <?php $n++;?>
+        @endforeach
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><b>TOTAL</b></td>
+          <td style="width: 30px">{{$ccinicial}}</td>
+          <td style="width: 30px">{{$ccentrada}}</td>
+          <td style="width: 30px">{{$ccsalida}}</td>
+          <td style="width: 30px">{{$ccsaldofinal}}</td>
+          <td style="width: 50px">{{$binicial}}</td>
+          <td style="width: 50px">{{$bentrada}}</td>
+          <td style="width: 50px">{{$bsalida}}</td>
+          <td style="width: 50px">{{$bsaldofinal}}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -89,7 +143,7 @@
   <div class="row">
     <table width="100%" align="center" style="font-size: 7pt">
       <tr>
-        <th style="text-align: right">Monto Total de Artículos Egresados: </th>
+        {{-- <th style="text-align: right">Monto Total de Artículos Egresados: </th> --}}
       </tr>
     </table>
   </div>

@@ -30,6 +30,22 @@
                       </div>
                       <!-- === -->
                       <div class="col-sm-4">
+                        <div class="form-group">
+                          <div class="form-line">
+                            <select required name="gestion" class="form-control form-control-sm select2bs4">
+                                <option value="">Seleccione una Gestion</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+
+                            </select>
+                          </div>
+                          <small>Gestion.</small>
+                        </div>
+                      </div>
+                      {{-- <div class="col-sm-4">
                           <div class="form-group">
                               <div class="form-line">
                                   <input type="date" required class="form-control" value="{{old('fechainicio')}}" name="fechainicio">
@@ -45,7 +61,7 @@
                                 </div>
                                 <small>Fecha Final.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
                             </div>
-                        </div>
+                        </div> --}}
                       <!-- === -->
                     </div>
                   </div>

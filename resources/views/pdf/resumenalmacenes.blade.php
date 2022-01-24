@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Artículo Egresado</title>
-
+  <link rel="stylesheet" href="{{ asset('css/print.style.css') }}" media="print">
 </head>
 <style>
   #watermark {
@@ -55,9 +55,14 @@
     }
 
 </style>
+<div class="noImprimir text-center">
+  <button onclick="javascript:window.print()" class="btn btn-link">
+      IMPRIMIR
+  </button>
+</div>
 <body>
   <header>
-    <p>{{$sucursal->sucursal}}<br>RESUMEN DE ALMACENES (BIENES DE CONSUMO) <br>{{\Carbon\Carbon::parse($fechainicio)->format('d/m/Y')}} al {{\Carbon\Carbon::parse($fechafin)->format('d/m/Y')}}</p>
+    <p>{{$sucursal->sucursal}}<br>RESUMEN DE ALMACENES (BIENES DE CONSUMO) <br></p>
     
   </header>
 
@@ -69,10 +74,10 @@
             <th>Partida.</th>
             <th>Categotia.</th>
             <th>Articulo.</th>
-            <th>Cantidad Inicial al {{\Carbon\Carbon::parse($fechainicio)->format('d/m/Y')}}.</th>
-            <th>Saldo Inicial al {{\Carbon\Carbon::parse($fechainicio)->format('d/m/Y')}} <br> <b>(Bs)</b>.</th>
-            <th>Cantidad Final al {{\Carbon\Carbon::parse($fechafin)->format('d/m/Y')}}.</th>
-            <th>Saldo Final al {{\Carbon\Carbon::parse($fechafin)->format('d/m/Y')}} <br> <b>(Bs)</b>.</th>
+            <th>Cantidad Inicial.</th>
+            <th>Saldo Inicial.<br> <b>(Bs)</b>.</th>
+            <th>Cantidad Final.</th>
+            <th>Saldo Final<br> <b>(Bs)</b>.</th>
         </tr>
       </thead>
       <tbody>
@@ -83,13 +88,13 @@
                         <td style="width: 30px"></td>
                         <td style="width: 30px">{{$item->categoria}}</td>
                         <td style="width: 30px">{{$item->articulo}}</td>
-                        <td style="width: 50px">{{$item->cantinicial}}</td>
+                        <td style="width: 50px">{{round($item->cantinicial)}}</td>
                         <td style="width: 50px">{{$item->saldoinicial}}</td>
-                        <td style="width: 50px">{{$item->cantfinal}}</td>
+                        <td style="width: 50px">{{round($item->cantfinal)}}</td>
                         <td style="width: 50px">{{$item->saldofinal}}</td>
                     </tr>
-                    <?php $cantinicial +=$item->cantinicial; 
-                          $cantfinal +=$item->cantfinal; 
+                    <?php $cantinicial +=round($item->cantinicial); 
+                          $cantfinal +=round($item->cantfinal); 
                           $saldoinicial +=$item->saldoinicial; 
                           $saldofinal +=$item->saldofinal;
                     ?>
