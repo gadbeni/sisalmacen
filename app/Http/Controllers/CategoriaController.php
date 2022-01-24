@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Input;
 use App\Categoria;
 use App\Partida;
 use App\Facturadetalle;
+use App\Partidacategoria;
 //use Illuminate\Validation\Rule;
 use DB;
 
@@ -64,6 +65,7 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request;
         //$this->validate($request,[
             //'nombre' => 'unique:categorias,nombre'
         //]);
@@ -80,6 +82,8 @@ class CategoriaController extends Controller
         $categoria = new Categoria();
         $categoria->nombre = $request->nombre;
         $categoria->save();
+
+        Partidacategoria::create(['partida_id' => $request->partida_id, 'categoria_id' => $categoria->id]);
 
         toast('Categoría registrada con éxito!','success');
         return redirect()->route('categoria.index');
