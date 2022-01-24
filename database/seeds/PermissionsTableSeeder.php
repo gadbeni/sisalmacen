@@ -500,5 +500,17 @@ class PermissionsTableSeeder extends Seeder
             'description'   => 'Podría generar reporte de resumenes almacen',
         ]);
 
+        //Reporte resumen almacen
+        Permission::create([
+            'name'          => 'Ver reporte de resumenes almacen',
+            'slug'          => 'reporte.resumenalmacenes',
+            'description'   => 'Podría generar reporte de resumenes almacen',
+        ]);
+        //Reporte detalle almacen
+        Permission::create([
+            'name'          => 'Ver reporte de detalle almacen',
+            'slug'          => 'reporte.detallesalmacenes',
+            'description'   => 'Podría generar reporte de detalle almacen',
+        ]);
     }
 }
