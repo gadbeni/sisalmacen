@@ -39,6 +39,7 @@ class SaldocompradetalleController extends Controller
      */
     public function store(Request $request, Saldocompra $saldocompra)
     {
+        // return $request;
         $clientIP =\Request::ip ();
 
         //Monto ingreso por mes - Variable

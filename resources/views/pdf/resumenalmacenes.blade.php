@@ -85,18 +85,18 @@
                 @foreach($data as $item)
                     <tr>
                         <td style="width: 30px">{{$n}}</td>
-                        <td style="width: 30px"></td>
+                        <td style="width: 30px">{{$item->codigo}}</td>
                         <td style="width: 30px">{{$item->categoria}}</td>
                         <td style="width: 30px">{{$item->articulo}}</td>
-                        <td style="width: 50px">{{round($item->cantinicial)}}</td>
-                        <td style="width: 50px">{{$item->saldoinicial}}</td>
-                        <td style="width: 50px">{{round($item->cantfinal)}}</td>
-                        <td style="width: 50px">{{$item->saldofinal}}</td>
+                        <td style="width: 50px">{{number_format((float)$item->cantinicial, 2, '.', '')}}</td>
+                        <td style="width: 50px">{{number_format((float)$item->saldoinicial, 2, '.', '')}}</td>
+                        <td style="width: 50px">{{number_format((float)$item->cantfinal, 2, '.', '')}}</td>
+                        <td style="width: 50px">{{number_format((float)$item->saldofinal, 2, '.', '')}}</td>
                     </tr>
-                    <?php $cantinicial +=round($item->cantinicial); 
-                          $cantfinal +=round($item->cantfinal); 
-                          $saldoinicial +=$item->saldoinicial; 
-                          $saldofinal +=$item->saldofinal;
+                    <?php $cantinicial +=number_format((float)$item->cantinicial, 2, '.', ''); 
+                          $cantfinal +=number_format((float)$item->cantfinal, 2, '.', ''); 
+                          $saldoinicial +=number_format((float)$item->saldoinicial, 2, '.', ''); 
+                          $saldofinal +=number_format((float)$item->saldofinal, 2, '.', '');
                     ?>
                     <?php $n++;?>
                 @endforeach
@@ -106,25 +106,26 @@
                   <td style="width: 30px"></td>
                   <td style="width: 30px"></td>
                   <td style="width: 30px">Total</td>
-                  <td style="width: 50px">{{$cantinicial}}</td>
-                  <td style="width: 50px">{{$saldoinicial}}</td>
-                  <td style="width: 50px">{{$cantfinal}}</td>
-                  <td style="width: 50px">{{$saldofinal}}</td>
+                  <td style="width: 50px">{{number_format((float)$cantinicial, 2, '.', '')}}</td>
+                  <td style="width: 50px">{{number_format((float)$saldoinicial, 2, '.', '')}}</td>
+                  <td style="width: 50px">{{number_format((float)$cantfinal, 2, '.', '')}}</td>
+                  <td style="width: 50px">{{number_format((float)$saldofinal, 2, '.', '')}}</td>
               </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="row">
+  {{-- <div class="row">
     <table width="100%" align="center" style="font-size: 7pt">
       <tr>
         <th style="text-align: right">Monto Total de Artículos Egresados: </th>
       </tr>
     </table>
-  </div>
+  </div> --}}
   <div class="text-center">
-    <p style="font-size: 13px;"><b>NOTA:</b> La información expuesta en el presente cuadro cuenta con la documentacion de soporte correspondiente, en el marco de las normas Básicas del Sistema de Contabilidad Integrada.</p>
-</div>
+      <p style="font-size: 13px;"><b>NOTA:</b> La información expuesta en el presente cuadro cuenta con la documentacion de soporte correspondiente, en el marco de las normas Básicas del Sistema de Contabilidad Integrada.</p>
+  </div>
+  
 
   <script type="text/php">
       if ( isset($pdf) ) {

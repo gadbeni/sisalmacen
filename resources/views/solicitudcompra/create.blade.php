@@ -43,7 +43,7 @@
                     </div>
 				</div>
 				<div class="card-body">
-					<h5>Solicitud de Compra:</h5>
+					<h5>Solicitud de Compra</h5>
 						<div class="row">
 							<!-- === -->
 							<div class="col-sm-3">

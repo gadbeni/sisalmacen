@@ -18,6 +18,7 @@ use App\Proveedor;
 use App\Facturadetalle;
 use App\Entidad;
 use Carbon\Carbon;
+use App\HistIngreso;
 use DB;
 
 class SolicitudcompraController extends Controller
@@ -93,7 +94,7 @@ class SolicitudcompraController extends Controller
      */
     public function store(Request $request)
     {
-
+        // return $request;
         //dd($request);
         //captura el año - gestion
         $date = Carbon::now();
@@ -145,10 +146,29 @@ class SolicitudcompraController extends Controller
                 $facturadetalle->gestion = $gestion;
                 $facturadetalle->user_id = Auth::user()->id;
                 $facturadetalle->save();
+                // $cont++;
+
+                // Hist ingreso
+                $hist_ingreso = new HistIngreso;
+                $hist_ingreso->sucursal_id = $request->sucursal_id;
+                $hist_ingreso->factura_id = $factura->id;
+                $hist_ingreso->articulo_id = $request->articulo_id[$cont];
+                $hist_ingreso->cantidadsolicitada = $request->cantidad[$cont];
+                $hist_ingreso->cantidadrestante = $request->cantidad[$cont];
+                $hist_ingreso->preciocompra = $request->precio[$cont];
+                $hist_ingreso->totalbs = $request->totalbs[$cont];
+                $hist_ingreso->registro_clientIP = $clientIP;
+                $hist_ingreso->registro_clientIP_update = $clientIP;
+                $hist_ingreso->gestion = $gestion;
+                $hist_ingreso->tipo = "Ingreso";
+                $hist_ingreso->user_id = Auth::user()->id;
+                $hist_ingreso->save();
+
+
                 $cont++;
             }
             DB::commit();
-            toast('Solicitud de compra registrada con éxito!','error');
+            toast('Solicitud de compra registrada con éxito!','success');
         }catch(\Exception $e){
             DB::rollback();
             dd($e);

@@ -18,6 +18,8 @@ use App\Unidadadministrativa;
 use App\Preventivo;
 use Carbon\Carbon;
 use Datatables;
+use App\HistEgreso;
+use App\HistIngreso;
 use DB;
 
 class EgresoController extends Controller
@@ -243,8 +245,37 @@ class EgresoController extends Controller
                 $egresodetalle->gestion = $gestion;
                 $egresodetalle->save();
 
+                $ok = Facturadetalle::find($request->facturadetalle_id[$cont]);
+                $tipo = "";
+
                 //Resta los productos de egresodetalle a la tabla facturadetalle.
                 $facturadetalle = Facturadetalle::where('id',$request->facturadetalle_id[$cont])->decrement('cantidadrestante', $request->cantidad[$cont]);
+                HistIngreso::where('id',$request->facturadetalle_id[$cont])->decrement('cantidadrestante', $request->cantidad[$cont]);
+                if($ok->gestion == $gestion)
+                {
+                    $tipo= "Ingreso";
+                }
+                else
+                {
+                    $tipo = "Adicional";
+                }
+
+                $hist_egreso = new HistEgreso;
+                $hist_egreso->user_id = Auth::user()->id;
+                $hist_egreso->sucursal_id = $request->sucursal_id;
+                $hist_egreso->egreso_id = $egreso->id;
+                $hist_egreso->solicitudcompra_id = $request->solicitudcompra_id[$cont];
+                $hist_egreso->facturadetalle_id = $request->facturadetalle_id[$cont];
+                $hist_egreso->cantidad = $request->cantidad[$cont];
+                $hist_egreso->cantidadegresada = $request->cantidad[$cont];
+                $hist_egreso->totalbs = $request->totalcompra[$cont];
+                $hist_egreso->registro_clientIP = $clientIP;
+                $hist_egreso->registro_clientIP_update = $clientIP;
+                $hist_egreso->gestion = $gestion;
+                $hist_egreso->tipo = $tipo;
+                $hist_egreso->save();
+
+
 
                 $cont++;
             }
@@ -406,7 +437,7 @@ class EgresoController extends Controller
     {
         // dd($request);
       $dep_id = $request->dep_id;
-
+ 
       $unidadadministrativa = Unidadadministrativa::where('direccionadministrativa_id',$dep_id)->get();
         return response()->json($unidadadministrativa);
     }

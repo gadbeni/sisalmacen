@@ -66,6 +66,13 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('vista/resumenalmacenes','VistasreportesController@resumenalmacenes')->name('v_resumenalmacenes');
 	Route::post('reporte/resumenalmacenes','ArticuloController@resumenalmacenes')->name('r_resumenalmacenes');
 
+	Route::get('vista/resumenalmacenesparida','VistasreportesController@resumenalmacenespartida')->name('v_resumenalmacenespartida');
+	Route::post('reporte/resumenalmacenesparida','ArticuloController@resumenalmacenespartida')->name('r_resumenalmacenespartida');
+
+
+
+
+
 	Route::get('vista/detallealmacenes','VistasreportesController@detallealmacenes')->name('v_detallealmacenes');
 	Route::post('reporte/detallealmacenes','ArticuloController@detallealmacenes')->name('r_detallealmacenes');
 
