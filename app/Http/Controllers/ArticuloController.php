@@ -28,6 +28,8 @@ class ArticuloController extends Controller
         $this->middleware('can:producto.edit')->only(['edit','update']);
         $this->middleware('can:producto.show')->only('show');
         $this->middleware('can:producto.destroy')->only('destroy');
+        $this->middleware('can:reporte.resumenalmacenes')->only('resumenalmacenes');
+        $this->middleware('can:reporte.detallesalmacenes')->only('detallealmacenes');
     }
     /**
      * Display a listing of the resource.
@@ -364,14 +366,14 @@ class ArticuloController extends Controller
         $pdf = \PDF::loadview('pdf.articuloegresado',compact('articulos'))->setPaper('A4','landscape');
         return $pdf->stream('SALDO DE '.$articulos[0]->articulo.'.pdf');
     }
-
-
-
+ 
     //Reporte resumenes de almacenes                --ig
     public function resumenalmacenes(Request $request)
     {
         // return $request;
-        $data = DB::table('categorias as c')
+        $data = DB::table('partidas as p')
+            ->join('partidacategorias as pt', 'pt.partida_id', 'p.id')
+            ->join('categorias as c', 'c.id', 'pt.categoria_id')
             ->join('articulos as r', 'r.categoria_id', 'c.id')
             ->join('facturadetalles as fd', 'fd.articulo_id', 'r.id')
             ->join('facturas as f', 'f.id', 'fd.factura_id')
@@ -381,7 +383,7 @@ class ArticuloController extends Controller
             ->where('fd.gestion', $request->gestion)            
             // ->where('sc.fechaingreso', '>=', $request->fechainicio)
             // ->where('sc.fechaingreso', '<=', $request->fechafin)
-            ->select('c.nombre as categoria', 'r.nombre as articulo', DB::raw("SUM(fd.cantidadsolicitada) as cantinicial"), DB::raw("sum(fd.totalbs) as saldoinicial"), 
+            ->select('p.codigo','c.nombre as categoria', 'r.nombre as articulo', DB::raw("SUM(fd.cantidadsolicitada) as cantinicial"), DB::raw("sum(fd.totalbs) as saldoinicial"), 
                 DB::raw("SUM(fd.cantidadrestante) as cantfinal"), DB::raw("sum(fd.preciocompra)"), DB::raw("SUM(fd.cantidadrestante) * sum(fd.preciocompra) as saldofinal"))
             ->groupBy('c.nombre', 'r.nombre')
             ->get();
@@ -395,12 +397,43 @@ class ArticuloController extends Controller
         // return $pdf->stream('SALDO DE.pdf');
     }
 
+    public function resumenalmacenespartida(Request $request)
+    {
+        $data = DB::table('partidas as p')
+            ->join('partidacategorias as pt', 'pt.partida_id', 'p.id')
+            ->join('categorias as c', 'c.id', 'pt.categoria_id')
+            ->join('articulos as r', 'r.categoria_id', 'c.id')
+            ->join('facturadetalles as fd', 'fd.articulo_id', 'r.id')
+            ->join('facturas as f', 'f.id', 'fd.factura_id')
+            ->join('sucursals as s', 's.id', 'fd.sucursal_id')
+            ->join('solicitudcompras as sc', 'sc.id', 'f.solicitudcompra_id')            
+            ->where('s.id', $request->sucursal_id)
+            ->where('fd.gestion', $request->gestion)            
+            // ->where('sc.fechaingreso', '>=', $request->fechainicio)
+            // ->where('sc.fechaingreso', '<=', $request->fechafin)
+            ->select('p.codigo','c.nombre as categoria', 'r.nombre as articulo', DB::raw("SUM(fd.cantidadsolicitada) as cantinicial"), DB::raw("sum(fd.totalbs) as saldoinicial"), 
+                DB::raw("SUM(fd.cantidadrestante) as cantfinal"), DB::raw("sum(fd.preciocompra)"), DB::raw("SUM(fd.cantidadrestante) * sum(fd.preciocompra) as saldofinal"))
+                ->groupBy('p.codigo','c.nombre', 'r.nombre') ->orderBy('p.codigo')
+            ->get();
+
+
+        
+
+        $sucursal = Sucursal::find($request->sucursal_id);
+        $anio = $request->gestion;
+        // return $request;
+        return view('pdf.resumenalmacenespartida', compact('data','sucursal', 'anio'));
+    }
+
+
 
     //Reporte detalle de almacenes                --ig
     public function detallealmacenes(Request $request)
     {
-        
-        $data = DB::table('articulos as a')
+        $data = DB::table('partidas as p')
+            ->join('partidacategorias as pt', 'pt.partida_id', 'p.id')
+            ->join('categorias as c', 'c.id', 'pt.categoria_id')
+            ->join('articulos as a', 'a.categoria_id', 'c.id')
             ->join('facturadetalles as fd', 'fd.articulo_id', 'a.id')  
             ->join('sucursals as s', 's.id', 'fd.sucursal_id')          
             ->where('s.id', $request->sucursal_id)

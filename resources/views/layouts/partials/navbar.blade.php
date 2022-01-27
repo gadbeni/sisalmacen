@@ -128,8 +128,11 @@
         @endcan
         @can('reporte.resumenalmacenes')
         <li><a href="{{route('v_resumenalmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Resumen Almacenes</a></li>
-        @endcan
+        
 
+        <li><a href="{{route('v_resumenalmacenespartida')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Resumen Almacenes Por Partidas</a></li>
+        @endcan
+        
         @can('reporte.detallesalmacenes')
         <li><a href="{{route('v_detallealmacenes')}}" class="dropdown-item"><i class="fas fa-chart-pie"></i> Reporte Detalle de Almacenes</a></li>
         @endcan

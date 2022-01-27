@@ -15,6 +15,11 @@ use DB;
 
 class VistasreportesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:reporte.resumenalmacenes')->only('resumenalmacenes');
+        $this->middleware('can:reporte.detallesalmacenes')->only('detallealmacenes');
+    }
     public function articulostock()
     {
     	$articulostock = Articulo::orderBy('nombre', 'asc')->get();
@@ -37,6 +42,14 @@ class VistasreportesController extends Controller
         $sucursales = Auth::user()->sucursales;
 
     	return view ('vistasreportes_por_parametros.resumenalmacenes',compact('articuloegreso','sucursales'));
+    }
+
+    public function resumenalmacenespartida()
+    {
+    	// $articuloegreso = Articulo::with('categoria')->orderBy('nombre', 'asc')->get();
+        $sucursales = Auth::user()->sucursales;
+
+    	return view ('vistasreportes_por_parametros.resumenalmacenespartida',compact('sucursales'));
     }
 
     public function detallealmacenes()

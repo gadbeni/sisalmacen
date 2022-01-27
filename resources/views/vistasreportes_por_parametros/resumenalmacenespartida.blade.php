@@ -8,11 +8,11 @@
             <div class="loader">
 
             </div>
-            <form action="{{route('r_detallealmacenes')}}" method="POST">
+            <form action="{{route('r_resumenalmacenespartida')}}" method="POST">
               @csrf
                 <div class="card card-info">
                   <div class="card-header">
-                    Detalle de almacenes
+                    Resumen de almacenes Partida
                   </div>
                   <div class="card-body">
                     <div class="row">
@@ -35,12 +35,28 @@
                             <select required name="gestion" class="form-control form-control-sm select2bs4">
                                 <option value="">Seleccione una Gestion</option>
                                 <option value="2021">2021</option>
-
                             </select>
                           </div>
                           <small>Gestion.</small>
                         </div>
                       </div>
+                      {{-- <div class="col-sm-4">
+                          <div class="form-group">
+                              <div class="form-line">
+                                  <input type="date" required class="form-control" value="{{old('fechainicio')}}" name="fechainicio">
+                              </div>
+                              <small>Fecha Inicio.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
+                          </div>
+                      </div>
+
+                      <div class="col-sm-4">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="date" required class="form-control" value="{{old('fechafin')}}" name="fechafin">
+                                </div>
+                                <small>Fecha Final.</small> <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red;" title="Campo requerido"></i>
+                            </div>
+                        </div> --}}
                       <!-- === -->
                     </div>
                   </div>
